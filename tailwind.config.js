@@ -1,3 +1,4 @@
+// tailwind.config.js - ACTUALIZADO CON NUEVAS ANIMACIONES
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   content: ["./src/**/*.{js,jsx,ts,tsx}"],
@@ -27,6 +28,10 @@ module.exports = {
         float: "float 6s ease-in-out infinite",
         gradient: "gradient 8s ease infinite",
         "pulse-glow": "pulse-glow 2s ease-in-out infinite",
+        "gradient-x": "gradient-x 3s ease infinite",
+        "spin-slow": "spin 20s linear infinite",
+        "fade-in-up": "fade-in-up 0.6s ease-out forwards",
+        "ping-slow": "ping 3s cubic-bezier(0, 0, 0.2, 1) infinite",
       },
       keyframes: {
         float: {
@@ -37,15 +42,32 @@ module.exports = {
           "0%, 100%": { backgroundPosition: "0% 50%" },
           "50%": { backgroundPosition: "100% 50%" },
         },
+        "gradient-x": {
+          "0%, 100%": { backgroundPosition: "0% 50%" },
+          "50%": { backgroundPosition: "100% 50%" },
+        },
         "pulse-glow": {
           "0%, 100%": { opacity: "1" },
           "50%": { opacity: "0.7" },
+        },
+        "fade-in-up": {
+          "0%": {
+            opacity: "0",
+            transform: "translateY(20px)",
+          },
+          "100%": {
+            opacity: "1",
+            transform: "translateY(0)",
+          },
         },
       },
       backgroundImage: {
         "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
         "gradient-conic":
           "conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))",
+      },
+      backdropBlur: {
+        xs: "2px",
       },
     },
   },
