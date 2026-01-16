@@ -170,22 +170,6 @@ const LandingPage: React.FC = () => {
           </div>
         </div>
 
-        {/* Controles del carrusel */}
-        <div className="absolute inset-0 z-10 flex items-center justify-between px-4 lg:px-8 pointer-events-none">
-          <button
-            onClick={prevSlide}
-            className="pointer-events-auto w-12 h-12 rounded-full bg-bg-300/30 backdrop-blur-sm border border-text-200/30 flex items-center justify-center text-text-200 hover:text-primary-300 hover:border-primary-300 transition-all duration-300 hover:scale-110 hover:bg-bg-300/50"
-          >
-            <ChevronLeft className="h-6 w-6" />
-          </button>
-          <button
-            onClick={nextSlide}
-            className="pointer-events-auto w-12 h-12 rounded-full bg-bg-300/30 backdrop-blur-sm border border-text-200/30 flex items-center justify-center text-text-200 hover:text-primary-300 hover:border-primary-300 transition-all duration-300 hover:scale-110 hover:bg-bg-300/50"
-          >
-            <ChevronRight className="h-6 w-6" />
-          </button>
-        </div>
-
         {/* Indicadores del carrusel */}
         <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 z-20 flex space-x-2">
           {carouselImages.map((_, index) => (
