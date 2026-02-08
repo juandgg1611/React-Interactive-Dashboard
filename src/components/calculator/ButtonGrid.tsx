@@ -42,6 +42,11 @@ interface ButtonGridProps {
   layout?: "basic" | "scientific" | "financial";
   showLabels?: boolean;
   animateButtons?: boolean;
+
+  // Nuevas props para compatibilidad
+  displayValue?: string;
+  history?: string;
+  hideDisplay?: boolean;
 }
 
 const ButtonGrid: React.FC<ButtonGridProps> = ({
@@ -201,7 +206,7 @@ const ButtonGrid: React.FC<ButtonGridProps> = ({
         "relative rounded-2xl bg-gradient-to-br from-bg-200/30 to-bg-300/20 backdrop-blur-sm",
         "border border-bg-300/40 shadow-xl overflow-hidden",
         gridAnimation && "animate-pulse-glow",
-        getSizeClasses()
+        getSizeClasses(),
       )}
     >
       {/* Efecto de fondo */}
@@ -228,7 +233,7 @@ const ButtonGrid: React.FC<ButtonGridProps> = ({
               "p-1.5 rounded-lg",
               layout === "scientific"
                 ? "bg-primary-200/20 text-primary-200"
-                : "bg-bg-300/30 text-text-200"
+                : "bg-bg-300/30 text-text-200",
             )}
           >
             {layout === "scientific" ? (
@@ -243,8 +248,8 @@ const ButtonGrid: React.FC<ButtonGridProps> = ({
             {layout === "scientific"
               ? "Científica"
               : layout === "financial"
-              ? "Financiera"
-              : "Básica"}
+                ? "Financiera"
+                : "Básica"}
           </span>
         </div>
 
@@ -269,7 +274,7 @@ const ButtonGrid: React.FC<ButtonGridProps> = ({
         className={cn(
           "grid grid-cols-4 gap-2 transition-all duration-300",
           layout === "scientific" && "grid-cols-5",
-          layout === "financial" && "grid-cols-4"
+          layout === "financial" && "grid-cols-4",
         )}
       >
         {/* ========== PRIMERA FILA ========== */}
@@ -277,7 +282,7 @@ const ButtonGrid: React.FC<ButtonGridProps> = ({
         <div
           className={cn(
             "col-span-4 grid grid-cols-4 gap-2 mb-2",
-            layout === "scientific" && "col-span-5 grid-cols-5"
+            layout === "scientific" && "col-span-5 grid-cols-5",
           )}
         >
           {/* Memoria */}
@@ -290,7 +295,7 @@ const ButtonGrid: React.FC<ButtonGridProps> = ({
             variant="function"
             className={cn(
               hoveredButton === "mc" && "scale-105",
-              lastPressed === "mc" && "animate-button-press"
+              lastPressed === "mc" && "animate-button-press",
             )}
             onMouseEnter={() => handleButtonHover("mc")}
             onMouseLeave={handleButtonLeave}
@@ -305,7 +310,7 @@ const ButtonGrid: React.FC<ButtonGridProps> = ({
             variant="function"
             className={cn(
               hoveredButton === "mr" && "scale-105",
-              lastPressed === "mr" && "animate-button-press"
+              lastPressed === "mr" && "animate-button-press",
             )}
             onMouseEnter={() => handleButtonHover("mr")}
             onMouseLeave={handleButtonLeave}
@@ -320,7 +325,7 @@ const ButtonGrid: React.FC<ButtonGridProps> = ({
             variant="function"
             className={cn(
               hoveredButton === "mplus" && "scale-105",
-              lastPressed === "mplus" && "animate-button-press"
+              lastPressed === "mplus" && "animate-button-press",
             )}
             onMouseEnter={() => handleButtonHover("mplus")}
             onMouseLeave={handleButtonLeave}
@@ -335,7 +340,7 @@ const ButtonGrid: React.FC<ButtonGridProps> = ({
             variant="function"
             className={cn(
               hoveredButton === "mminus" && "scale-105",
-              lastPressed === "mminus" && "animate-button-press"
+              lastPressed === "mminus" && "animate-button-press",
             )}
             onMouseEnter={() => handleButtonHover("mminus")}
             onMouseLeave={handleButtonLeave}
@@ -353,7 +358,7 @@ const ButtonGrid: React.FC<ButtonGridProps> = ({
               showLabel={showLabels}
               className={cn(
                 hoveredButton === "sin" && "scale-105",
-                lastPressed === "sin" && "animate-button-press"
+                lastPressed === "sin" && "animate-button-press",
               )}
               onMouseEnter={() => handleButtonHover("sin")}
               onMouseLeave={handleButtonLeave}
@@ -366,7 +371,7 @@ const ButtonGrid: React.FC<ButtonGridProps> = ({
         <div
           className={cn(
             "col-span-4 grid grid-cols-4 gap-2 mb-2",
-            layout === "scientific" && "col-span-5 grid-cols-5"
+            layout === "scientific" && "col-span-5 grid-cols-5",
           )}
         >
           <BasicButton
@@ -378,7 +383,7 @@ const ButtonGrid: React.FC<ButtonGridProps> = ({
             variant="clear"
             className={cn(
               hoveredButton === "ce" && "scale-105",
-              lastPressed === "ce" && "animate-button-press"
+              lastPressed === "ce" && "animate-button-press",
             )}
             onMouseEnter={() => handleButtonHover("ce")}
             onMouseLeave={handleButtonLeave}
@@ -393,7 +398,7 @@ const ButtonGrid: React.FC<ButtonGridProps> = ({
             variant="clear"
             className={cn(
               hoveredButton === "c" && "scale-105",
-              lastPressed === "c" && "animate-button-press"
+              lastPressed === "c" && "animate-button-press",
             )}
             onMouseEnter={() => handleButtonHover("c")}
             onMouseLeave={handleButtonLeave}
@@ -407,7 +412,7 @@ const ButtonGrid: React.FC<ButtonGridProps> = ({
             }}
             className={cn(
               hoveredButton === "backspace" && "scale-105",
-              lastPressed === "backspace" && "animate-button-press"
+              lastPressed === "backspace" && "animate-button-press",
             )}
             onMouseEnter={() => handleButtonHover("backspace")}
             onMouseLeave={handleButtonLeave}
@@ -423,7 +428,7 @@ const ButtonGrid: React.FC<ButtonGridProps> = ({
             className={cn(
               hoveredButton === "divide" && "scale-105",
               lastPressed === "divide" && "animate-button-press",
-              keyboardFocus === "/" && "ring-2 ring-primary-300"
+              keyboardFocus === "/" && "ring-2 ring-primary-300",
             )}
             onMouseEnter={() => handleButtonHover("divide")}
             onMouseLeave={handleButtonLeave}
@@ -441,7 +446,7 @@ const ButtonGrid: React.FC<ButtonGridProps> = ({
               showLabel={showLabels}
               className={cn(
                 hoveredButton === "cos" && "scale-105",
-                lastPressed === "cos" && "animate-button-press"
+                lastPressed === "cos" && "animate-button-press",
               )}
               onMouseEnter={() => handleButtonHover("cos")}
               onMouseLeave={handleButtonLeave}
@@ -454,7 +459,7 @@ const ButtonGrid: React.FC<ButtonGridProps> = ({
         <div
           className={cn(
             "col-span-4 grid grid-cols-4 gap-2 mb-2",
-            layout === "scientific" && "col-span-5 grid-cols-5"
+            layout === "scientific" && "col-span-5 grid-cols-5",
           )}
         >
           <BasicButton
@@ -467,7 +472,7 @@ const ButtonGrid: React.FC<ButtonGridProps> = ({
             className={cn(
               hoveredButton === "7" && "scale-105",
               lastPressed === "7" && "animate-button-press",
-              keyboardFocus === "7" && "ring-2 ring-primary-300"
+              keyboardFocus === "7" && "ring-2 ring-primary-300",
             )}
             onMouseEnter={() => handleButtonHover("7")}
             onMouseLeave={handleButtonLeave}
@@ -483,7 +488,7 @@ const ButtonGrid: React.FC<ButtonGridProps> = ({
             className={cn(
               hoveredButton === "8" && "scale-105",
               lastPressed === "8" && "animate-button-press",
-              keyboardFocus === "8" && "ring-2 ring-primary-300"
+              keyboardFocus === "8" && "ring-2 ring-primary-300",
             )}
             onMouseEnter={() => handleButtonHover("8")}
             onMouseLeave={handleButtonLeave}
@@ -499,7 +504,7 @@ const ButtonGrid: React.FC<ButtonGridProps> = ({
             className={cn(
               hoveredButton === "9" && "scale-105",
               lastPressed === "9" && "animate-button-press",
-              keyboardFocus === "9" && "ring-2 ring-primary-300"
+              keyboardFocus === "9" && "ring-2 ring-primary-300",
             )}
             onMouseEnter={() => handleButtonHover("9")}
             onMouseLeave={handleButtonLeave}
@@ -515,7 +520,7 @@ const ButtonGrid: React.FC<ButtonGridProps> = ({
             className={cn(
               hoveredButton === "multiply" && "scale-105",
               lastPressed === "multiply" && "animate-button-press",
-              keyboardFocus === "*" && "ring-2 ring-primary-300"
+              keyboardFocus === "*" && "ring-2 ring-primary-300",
             )}
             onMouseEnter={() => handleButtonHover("multiply")}
             onMouseLeave={handleButtonLeave}
@@ -533,7 +538,7 @@ const ButtonGrid: React.FC<ButtonGridProps> = ({
               showLabel={showLabels}
               className={cn(
                 hoveredButton === "tan" && "scale-105",
-                lastPressed === "tan" && "animate-button-press"
+                lastPressed === "tan" && "animate-button-press",
               )}
               onMouseEnter={() => handleButtonHover("tan")}
               onMouseLeave={handleButtonLeave}
@@ -545,7 +550,7 @@ const ButtonGrid: React.FC<ButtonGridProps> = ({
         <div
           className={cn(
             "col-span-4 grid grid-cols-4 gap-2 mb-2",
-            layout === "scientific" && "col-span-5 grid-cols-5"
+            layout === "scientific" && "col-span-5 grid-cols-5",
           )}
         >
           <BasicButton
@@ -558,7 +563,7 @@ const ButtonGrid: React.FC<ButtonGridProps> = ({
             className={cn(
               hoveredButton === "4" && "scale-105",
               lastPressed === "4" && "animate-button-press",
-              keyboardFocus === "4" && "ring-2 ring-primary-300"
+              keyboardFocus === "4" && "ring-2 ring-primary-300",
             )}
             onMouseEnter={() => handleButtonHover("4")}
             onMouseLeave={handleButtonLeave}
@@ -574,7 +579,7 @@ const ButtonGrid: React.FC<ButtonGridProps> = ({
             className={cn(
               hoveredButton === "5" && "scale-105",
               lastPressed === "5" && "animate-button-press",
-              keyboardFocus === "5" && "ring-2 ring-primary-300"
+              keyboardFocus === "5" && "ring-2 ring-primary-300",
             )}
             onMouseEnter={() => handleButtonHover("5")}
             onMouseLeave={handleButtonLeave}
@@ -590,7 +595,7 @@ const ButtonGrid: React.FC<ButtonGridProps> = ({
             className={cn(
               hoveredButton === "6" && "scale-105",
               lastPressed === "6" && "animate-button-press",
-              keyboardFocus === "6" && "ring-2 ring-primary-300"
+              keyboardFocus === "6" && "ring-2 ring-primary-300",
             )}
             onMouseEnter={() => handleButtonHover("6")}
             onMouseLeave={handleButtonLeave}
@@ -606,7 +611,7 @@ const ButtonGrid: React.FC<ButtonGridProps> = ({
             className={cn(
               hoveredButton === "subtract" && "scale-105",
               lastPressed === "subtract" && "animate-button-press",
-              keyboardFocus === "-" && "ring-2 ring-primary-300"
+              keyboardFocus === "-" && "ring-2 ring-primary-300",
             )}
             onMouseEnter={() => handleButtonHover("subtract")}
             onMouseLeave={handleButtonLeave}
@@ -624,7 +629,7 @@ const ButtonGrid: React.FC<ButtonGridProps> = ({
               showLabel={showLabels}
               className={cn(
                 hoveredButton === "log" && "scale-105",
-                lastPressed === "log" && "animate-button-press"
+                lastPressed === "log" && "animate-button-press",
               )}
               onMouseEnter={() => handleButtonHover("log")}
               onMouseLeave={handleButtonLeave}
@@ -636,7 +641,7 @@ const ButtonGrid: React.FC<ButtonGridProps> = ({
         <div
           className={cn(
             "col-span-4 grid grid-cols-4 gap-2 mb-2",
-            layout === "scientific" && "col-span-5 grid-cols-5"
+            layout === "scientific" && "col-span-5 grid-cols-5",
           )}
         >
           <BasicButton
@@ -649,7 +654,7 @@ const ButtonGrid: React.FC<ButtonGridProps> = ({
             className={cn(
               hoveredButton === "1" && "scale-105",
               lastPressed === "1" && "animate-button-press",
-              keyboardFocus === "1" && "ring-2 ring-primary-300"
+              keyboardFocus === "1" && "ring-2 ring-primary-300",
             )}
             onMouseEnter={() => handleButtonHover("1")}
             onMouseLeave={handleButtonLeave}
@@ -665,7 +670,7 @@ const ButtonGrid: React.FC<ButtonGridProps> = ({
             className={cn(
               hoveredButton === "2" && "scale-105",
               lastPressed === "2" && "animate-button-press",
-              keyboardFocus === "2" && "ring-2 ring-primary-300"
+              keyboardFocus === "2" && "ring-2 ring-primary-300",
             )}
             onMouseEnter={() => handleButtonHover("2")}
             onMouseLeave={handleButtonLeave}
@@ -681,7 +686,7 @@ const ButtonGrid: React.FC<ButtonGridProps> = ({
             className={cn(
               hoveredButton === "3" && "scale-105",
               lastPressed === "3" && "animate-button-press",
-              keyboardFocus === "3" && "ring-2 ring-primary-300"
+              keyboardFocus === "3" && "ring-2 ring-primary-300",
             )}
             onMouseEnter={() => handleButtonHover("3")}
             onMouseLeave={handleButtonLeave}
@@ -697,7 +702,7 @@ const ButtonGrid: React.FC<ButtonGridProps> = ({
             className={cn(
               hoveredButton === "add" && "scale-105",
               lastPressed === "add" && "animate-button-press",
-              keyboardFocus === "+" && "ring-2 ring-primary-300"
+              keyboardFocus === "+" && "ring-2 ring-primary-300",
             )}
             onMouseEnter={() => handleButtonHover("add")}
             onMouseLeave={handleButtonLeave}
@@ -715,7 +720,7 @@ const ButtonGrid: React.FC<ButtonGridProps> = ({
               showLabel={showLabels}
               className={cn(
                 hoveredButton === "ln" && "scale-105",
-                lastPressed === "ln" && "animate-button-press"
+                lastPressed === "ln" && "animate-button-press",
               )}
               onMouseEnter={() => handleButtonHover("ln")}
               onMouseLeave={handleButtonLeave}
@@ -728,13 +733,13 @@ const ButtonGrid: React.FC<ButtonGridProps> = ({
         <div
           className={cn(
             "col-span-4 grid gap-2",
-            layout === "scientific" ? "grid-cols-5" : "grid-cols-4"
+            layout === "scientific" ? "grid-cols-5" : "grid-cols-4",
           )}
         >
           {/* Botón 0 (ancho doble en modo básico, normal en científico) */}
           <div
             className={cn(
-              layout === "scientific" ? "col-span-2" : "col-span-2"
+              layout === "scientific" ? "col-span-2" : "col-span-2",
             )}
           >
             <BasicButton
@@ -748,7 +753,7 @@ const ButtonGrid: React.FC<ButtonGridProps> = ({
               className={cn(
                 hoveredButton === "0" && "scale-105",
                 lastPressed === "0" && "animate-button-press",
-                keyboardFocus === "0" && "ring-2 ring-primary-300"
+                keyboardFocus === "0" && "ring-2 ring-primary-300",
               )}
               onMouseEnter={() => handleButtonHover("0")}
               onMouseLeave={handleButtonLeave}
@@ -765,7 +770,7 @@ const ButtonGrid: React.FC<ButtonGridProps> = ({
             className={cn(
               hoveredButton === "decimal" && "scale-105",
               lastPressed === "decimal" && "animate-button-press",
-              keyboardFocus === "." && "ring-2 ring-primary-300"
+              keyboardFocus === "." && "ring-2 ring-primary-300",
             )}
             onMouseEnter={() => handleButtonHover("decimal")}
             onMouseLeave={handleButtonLeave}
@@ -780,7 +785,7 @@ const ButtonGrid: React.FC<ButtonGridProps> = ({
             }}
             className={cn(
               hoveredButton === "toggleSign" && "scale-105",
-              lastPressed === "toggleSign" && "animate-button-press"
+              lastPressed === "toggleSign" && "animate-button-press",
             )}
             onMouseEnter={() => handleButtonHover("toggleSign")}
             onMouseLeave={handleButtonLeave}
@@ -803,7 +808,7 @@ const ButtonGrid: React.FC<ButtonGridProps> = ({
                 "w-full h-20 md:h-24", // Altura más grande
                 hoveredButton === "equals" && "scale-105",
                 lastPressed === "equals" && "animate-button-press",
-                keyboardFocus === "=" && "ring-4 ring-primary-300/50"
+                keyboardFocus === "=" && "ring-4 ring-primary-300/50",
               )}
               onMouseEnter={() => handleButtonHover("equals")}
               onMouseLeave={handleButtonLeave}
@@ -826,7 +831,7 @@ const ButtonGrid: React.FC<ButtonGridProps> = ({
                 showLabel={showLabels}
                 className={cn(
                   hoveredButton === func && "scale-105",
-                  lastPressed === func && "animate-button-press"
+                  lastPressed === func && "animate-button-press",
                 )}
                 onMouseEnter={() => handleButtonHover(func)}
                 onMouseLeave={handleButtonLeave}

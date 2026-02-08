@@ -1,5 +1,5 @@
 // src/components/layout/Sidebar.tsx
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Home,
   FileText,
@@ -12,21 +12,17 @@ import {
   Bell,
   HelpCircle,
   LogOut,
-  Wallet,
-  TrendingUp,
   Brain,
-  Zap,
-  User,
-  CreditCard,
   Calendar,
-  DollarSign,
   Calculator,
+  ChevronRight as ChevronRightIcon,
+  Menu,
+  X,
 } from "lucide-react";
 import { Button } from "../ui/button";
 import { cn } from "../../lib/utils";
 import { useNavigate, useLocation } from "react-router-dom";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
-// Necesitamos importar PlusCircle
 import { PlusCircle } from "lucide-react";
 
 interface NavItem {
@@ -40,6 +36,8 @@ interface NavItem {
 
 const Sidebar = () => {
   const [isCollapsed, setIsCollapsed] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isMobileView, setIsMobileView] = useState(false);
   const [activeItem, setActiveItem] = useState("dashboard");
   const navigate = useNavigate();
   const location = useLocation();
@@ -51,6 +49,22 @@ const Sidebar = () => {
     role: "Investigador Premium",
     plan: "Pro",
   };
+
+  // Detectar el tamaño de pantalla
+  useEffect(() => {
+    const checkScreenSize = () => {
+      const mobile = window.innerWidth < 1024;
+      setIsMobileView(mobile);
+      if (!mobile) {
+        setIsMobileMenuOpen(false);
+      }
+    };
+
+    checkScreenSize();
+    window.addEventListener("resize", checkScreenSize);
+
+    return () => window.removeEventListener("resize", checkScreenSize);
+  }, []);
 
   // Items de navegación principales
   const mainNavItems: NavItem[] = [
@@ -65,14 +79,12 @@ const Sidebar = () => {
       label: "Transacciones",
       icon: <FileText className="h-5 w-5" />,
       path: "/transactions",
-      badge: 3,
     },
     {
       id: "budgets",
       label: "Presupuestos",
       icon: <PieChart className="h-5 w-5" />,
       path: "/budgets",
-      badge: 1,
     },
     {
       id: "goals",
@@ -109,6 +121,16 @@ const Sidebar = () => {
   const handleNavigation = (item: NavItem) => {
     setActiveItem(item.id);
     navigate(item.path);
+    if (isMobileView) {
+      setIsMobileMenuOpen(false);
+    }
+  };
+
+  const handleProfileClick = () => {
+    navigate("/profile");
+    if (isMobileView) {
+      setIsMobileMenuOpen(false);
+    }
   };
 
   const isActive = (path: string) => {
@@ -117,14 +139,44 @@ const Sidebar = () => {
     );
   };
 
-  return (
-    <aside
+  // Botón hamburguesa para móviles y tablets - CON POSICIÓN ADAPTATIVA
+  const MobileMenuButton = () => (
+    <button
+      onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
       className={cn(
-        "fixed left-0 top-0 h-screen flex flex-col border-r border-bg-300/30 bg-gradient-to-b from-bg-200/80 to-bg-300/40 backdrop-blur-xl z-50 transition-all duration-300",
-        isCollapsed ? "w-24" : "w-72" // Cambiado de w-20 a w-24 colapsado, de w-64 a w-72 expandido
+        "lg:hidden fixed z-50 p-2 rounded-lg bg-gradient-to-br from-primary-100 to-primary-200 text-white shadow-lg shadow-primary-100/25 hover:shadow-primary-200/35 transition-all duration-300",
+        // Para móviles pequeños (<768px): izquierda
+        "left-4 top-4",
+        // Para tablets (≥768px): derecha
+        "md:left-auto md:right-4",
       )}
+      aria-label={isMobileMenuOpen ? "Cerrar menú" : "Abrir menú"}
     >
-      {/* Logo y toggle */}
+      {isMobileMenuOpen ? (
+        <X className="h-6 w-6" />
+      ) : (
+        <Menu className="h-6 w-6" />
+      )}
+    </button>
+  );
+
+  // Overlay para móviles
+  const MobileOverlay = () => {
+    if (isMobileView && isMobileMenuOpen) {
+      return (
+        <div
+          className="fixed inset-0 bg-black/50 backdrop-blur-sm z-40 lg:hidden"
+          onClick={() => setIsMobileMenuOpen(false)}
+        />
+      );
+    }
+    return null;
+  };
+
+  // Contenido del sidebar
+  const SidebarContent = () => (
+    <>
+      {/* Logo - SIN BOTÓN DE COLAPSAR en desktop */}
       <div className="flex items-center justify-between p-6 border-b border-bg-300/30">
         {!isCollapsed ? (
           <div className="flex items-center gap-3">
@@ -139,7 +191,7 @@ const Sidebar = () => {
                 Finanzas<span className="text-primary-200">IA</span>
               </h1>
               <p className="text-xs text-text-200/70">
-                {userData.plan} Edition
+                Tu asistente financiero inteligente
               </p>
             </div>
           </div>
@@ -150,27 +202,68 @@ const Sidebar = () => {
             </div>
           </div>
         )}
+
+        {/* ELIMINADO: Botón de colapsar solo en desktop - Ya no lo queremos */}
       </div>
 
       {/* Perfil de usuario */}
-      {!isCollapsed && (
-        <div className="p-6 border-b border-bg-300/30">
+      {!isCollapsed ? (
+        <div
+          className="p-6 border-b border-bg-300/30 cursor-pointer group hover:bg-bg-300/20 transition-all duration-200"
+          onClick={handleProfileClick}
+        >
           <div className="flex items-center gap-3">
-            <Avatar className="h-12 w-12 border-2 border-primary-200/30">
-              <AvatarFallback className="bg-primary-100/20 text-primary-200 text-lg font-bold">
+            <div className="relative">
+              <Avatar className="h-12 w-12 border-2 border-primary-200/30 group-hover:border-primary-300 transition-colors">
+                <AvatarFallback className="bg-gradient-to-br from-primary-100/30 to-primary-200/20 text-primary-200 text-lg font-bold group-hover:scale-105 transition-transform">
+                  {userData.avatar}
+                </AvatarFallback>
+              </Avatar>
+              <div className="absolute -bottom-1 -right-1">
+                <div className="relative">
+                  <div className="absolute inset-0 bg-green-400 rounded-full animate-ping opacity-20"></div>
+                  <div className="relative w-4 h-4 rounded-full bg-gradient-to-br from-green-400 to-green-300 flex items-center justify-center border-2 border-bg-200">
+                    <div className="w-1.5 h-1.5 bg-white rounded-full"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div className="flex-1 min-w-0">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h3 className="font-semibold text-text-100 truncate group-hover:text-primary-200 transition-colors">
+                    {userData.name}
+                  </h3>
+                  <p className="text-xs text-text-200/70 truncate group-hover:text-primary-200/70 transition-colors">
+                    {userData.role}
+                  </p>
+                </div>
+                <ChevronRightIcon className="h-4 w-4 text-text-200/50 group-hover:text-primary-200 group-hover:translate-x-1 transition-all" />
+              </div>
+              <div className="flex items-center gap-1 mt-1">
+                <div className="w-2 h-2 bg-primary-200 rounded-full animate-pulse group-hover:bg-primary-300 transition-colors" />
+                <span className="text-xs text-primary-300 group-hover:text-primary-200 transition-colors">
+                  Ver mi perfil
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      ) : (
+        <div
+          className="p-4 border-b border-bg-300/30 flex justify-center cursor-pointer group hover:bg-bg-300/20 transition-all duration-200"
+          onClick={handleProfileClick}
+        >
+          <div className="relative">
+            <Avatar className="h-10 w-10 border-2 border-primary-200/30 group-hover:border-primary-300 transition-colors">
+              <AvatarFallback className="bg-gradient-to-br from-primary-100/30 to-primary-200/20 text-primary-200 text-sm font-bold group-hover:scale-105 transition-transform">
                 {userData.avatar}
               </AvatarFallback>
             </Avatar>
-            <div className="flex-1 min-w-0">
-              <h3 className="font-semibold text-text-100 truncate">
-                {userData.name}
-              </h3>
-              <p className="text-xs text-text-200/70 truncate">
-                {userData.role}
-              </p>
-              <div className="flex items-center gap-1 mt-1">
-                <div className="w-2 h-2 bg-primary-300 rounded-full animate-pulse" />
-                <span className="text-xs text-primary-300">Conectado</span>
+            <div className="absolute -bottom-0.5 -right-0.5">
+              <div className="relative">
+                <div className="absolute inset-0 bg-green-400 rounded-full animate-ping opacity-20"></div>
+                <div className="relative w-3 h-3 rounded-full bg-gradient-to-br from-green-400 to-green-300 border border-bg-200"></div>
               </div>
             </div>
           </div>
@@ -183,7 +276,7 @@ const Sidebar = () => {
           <h3
             className={cn(
               "text-xs font-semibold text-text-200/50 uppercase tracking-wider mb-3 px-3",
-              isCollapsed && "text-center px-0"
+              isCollapsed && "text-center px-0",
             )}
           >
             {isCollapsed ? "..." : "Navegación"}
@@ -197,7 +290,7 @@ const Sidebar = () => {
                 "w-full justify-start h-12 px-3 rounded-xl mb-1 transition-all duration-200 group",
                 isActive(item.path)
                   ? "bg-gradient-to-r from-primary-100/20 to-primary-200/10 border-l-4 border-primary-200 text-primary-200"
-                  : "text-text-200 hover:text-primary-300 hover:bg-bg-300/30"
+                  : "text-text-200 hover:text-primary-300 hover:bg-bg-300/30",
               )}
               onClick={() => handleNavigation(item)}
             >
@@ -205,7 +298,7 @@ const Sidebar = () => {
                 <div
                   className={cn(
                     "transition-transform duration-200",
-                    isActive(item.path) && "scale-110"
+                    isActive(item.path) && "scale-110",
                   )}
                 >
                   {item.icon}
@@ -247,11 +340,13 @@ const Sidebar = () => {
       <div className="border-t border-bg-300/30 p-4">
         {!isCollapsed ? (
           <div className="space-y-3">
-            {/* Notificaciones */}
             <Button
               variant="ghost"
               className="w-full justify-start text-text-200 hover:text-primary-300 hover:bg-bg-300/30"
-              onClick={() => navigate("/notifications")}
+              onClick={() => {
+                navigate("/notifications");
+                if (isMobileView) setIsMobileMenuOpen(false);
+              }}
             >
               <Bell className="h-5 w-5" />
               <span className="ml-3">Notificaciones</span>
@@ -260,23 +355,25 @@ const Sidebar = () => {
               </span>
             </Button>
 
-            {/* Ayuda */}
             <Button
               variant="ghost"
               className="w-full justify-start text-text-200 hover:text-primary-300 hover:bg-bg-300/30"
-              onClick={() => navigate("/help")}
+              onClick={() => {
+                navigate("/help");
+                if (isMobileView) setIsMobileMenuOpen(false);
+              }}
             >
               <HelpCircle className="h-5 w-5" />
               <span className="ml-3">Ayuda & Soporte</span>
             </Button>
 
-            {/* Cerrar sesión */}
             <Button
               variant="ghost"
               className="w-full justify-start text-text-200 hover:text-red-400 hover:bg-red-500/10 mt-4"
               onClick={() => {
                 localStorage.removeItem("token");
                 navigate("/login");
+                if (isMobileView) setIsMobileMenuOpen(false);
               }}
             >
               <LogOut className="h-5 w-5" />
@@ -289,7 +386,10 @@ const Sidebar = () => {
               variant="ghost"
               size="icon"
               className="h-10 w-10 text-text-200 hover:text-primary-300 hover:bg-bg-300/30"
-              onClick={() => navigate("/notifications")}
+              onClick={() => {
+                navigate("/notifications");
+                if (isMobileView) setIsMobileMenuOpen(false);
+              }}
             >
               <Bell className="h-5 w-5" />
               <span className="absolute -top-0.5 -right-0.5 h-3 w-3 bg-primary-200 rounded-full text-[8px] flex items-center justify-center">
@@ -300,7 +400,10 @@ const Sidebar = () => {
               variant="ghost"
               size="icon"
               className="h-10 w-10 text-text-200 hover:text-primary-300 hover:bg-bg-300/30"
-              onClick={() => navigate("/help")}
+              onClick={() => {
+                navigate("/help");
+                if (isMobileView) setIsMobileMenuOpen(false);
+              }}
             >
               <HelpCircle className="h-5 w-5" />
             </Button>
@@ -311,6 +414,7 @@ const Sidebar = () => {
               onClick={() => {
                 localStorage.removeItem("token");
                 navigate("/login");
+                if (isMobileView) setIsMobileMenuOpen(false);
               }}
             >
               <LogOut className="h-5 w-5" />
@@ -331,23 +435,41 @@ const Sidebar = () => {
           </div>
         )}
       </div>
-    </aside>
+    </>
+  );
+
+  return (
+    <>
+      {/* Botón hamburguesa para móviles y tablets */}
+      <MobileMenuButton />
+
+      {/* Overlay para móviles */}
+      <MobileOverlay />
+
+      {/* Sidebar principal */}
+      <aside
+        className={cn(
+          "fixed left-0 top-0 h-screen flex flex-col border-r border-bg-300/30 bg-gradient-to-b from-bg-200/80 to-bg-300/40 backdrop-blur-xl z-40 transition-all duration-300",
+          // Tamaño fijo en desktop (siempre expandido)
+          "w-72",
+          // Responsive: oculto por defecto en móviles/tablets, visible en desktop
+          isMobileView
+            ? isMobileMenuOpen
+              ? "translate-x-0 shadow-2xl"
+              : "-translate-x-full"
+            : "translate-x-0",
+        )}
+      >
+        <SidebarContent />
+      </aside>
+
+      {/* Espacio para el contenido principal - SOLO en desktop */}
+      {/* Nota: Como el sidebar siempre está expandido, siempre usamos ml-72 */}
+      {!isMobileView && (
+        <div className="hidden lg:block transition-all duration-300 ml-72" />
+      )}
+    </>
   );
 };
-
-// Necesitamos crear un componente Badge
-const Badge: React.FC<{ children: React.ReactNode; className?: string }> = ({
-  children,
-  className,
-}) => (
-  <span
-    className={cn(
-      "inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium",
-      className
-    )}
-  >
-    {children}
-  </span>
-);
 
 export default Sidebar;

@@ -1,4 +1,4 @@
-// src/components/landing/LandingPage.tsx - CARRUSEL SOLO EN HERO
+// src/components/landing/LandingPage.tsx - VERSIÓN RESPONSIVE CORREGIDA
 import React, { useState, useEffect } from "react";
 import { Button } from "../ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
@@ -8,17 +8,10 @@ import {
   Target,
   Shield,
   Zap,
-  BarChart3,
   ArrowRight,
-  CheckCircle,
-  DollarSign,
-  Lock,
-  ChevronLeft,
-  ChevronRight,
   Sparkles,
   Award,
   Users,
-  Clock,
   Smartphone,
   Monitor,
   Tablet,
@@ -26,14 +19,22 @@ import {
   LineChart,
   CreditCard,
   Wallet,
-  Coins,
   Cloud,
   Home,
   User,
   RefreshCcw,
-  TrendingDown,
   Calendar,
+  Github,
+  HelpCircle,
+  GraduationCap,
+  Menu,
+  ExternalLink,
+  ShieldCheck,
+  Rocket,
+  X,
 } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { cn } from "../../lib/utils";
 
 // URLs de imágenes para el carrusel (temáticas de finanzas)
 const carouselImages = [
@@ -62,6 +63,8 @@ const carouselImages = [
 const LandingPage: React.FC = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isAnimating, setIsAnimating] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const navigate = useNavigate();
 
   const features = [
     {
@@ -124,10 +127,334 @@ const LandingPage: React.FC = () => {
     if (!isAnimating) {
       setIsAnimating(true);
       setCurrentSlide(
-        (prev) => (prev - 1 + carouselImages.length) % carouselImages.length
+        (prev) => (prev - 1 + carouselImages.length) % carouselImages.length,
       );
       setTimeout(() => setIsAnimating(false), 500);
     }
+  };
+
+  // Funciones de navegación
+  const handleNavigateToFeatures = () => {
+    navigate("/features");
+    setIsMobileMenuOpen(false);
+  };
+
+  const handleNavigateToHelp = () => {
+    navigate("/help");
+    setIsMobileMenuOpen(false);
+  };
+
+  const handleNavigateToLogin = () => {
+    navigate("/login");
+    setIsMobileMenuOpen(false);
+  };
+
+  const handleNavigateToGithub = () => {
+    window.open(
+      "https://github.com/juandgg1611/React-Interactive-Dashboard",
+      "_blank",
+    );
+    setIsMobileMenuOpen(false);
+  };
+
+  const handleNavigateToRegister = () => {
+    navigate("/register");
+    setIsMobileMenuOpen(false);
+  };
+
+  const handleNavigateToUniversity = () => {
+    window.open("https://www.urbe.edu/", "_blank");
+    setIsMobileMenuOpen(false);
+  };
+
+  // Mobile Menu Component integrado - DISEÑO Y ANIMACIONES MEJORADAS
+  const MobileMenu = () => {
+    // Efecto para bloquear scroll cuando el menú está abierto
+    useEffect(() => {
+      if (isMobileMenuOpen) {
+        document.body.style.overflow = "hidden";
+      } else {
+        document.body.style.overflow = "unset";
+      }
+      return () => {
+        document.body.style.overflow = "unset";
+      };
+    }, [isMobileMenuOpen]);
+
+    return (
+      <>
+        {/* Botón hamburguesa con animación mejorada */}
+        <button
+          onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+          className="lg:hidden fixed top-6 right-4 z-50 p-3 rounded-2xl bg-gradient-to-br from-primary-100/90 to-primary-200/90 backdrop-blur-md text-white shadow-2xl shadow-primary-100/30 hover:shadow-primary-200/40 transition-all duration-500 transform hover:scale-110 active:scale-95 group"
+          aria-label="Menú de navegación"
+        >
+          <div className="relative">
+            <div className="absolute inset-0 bg-gradient-to-r from-primary-200 to-primary-300 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+            {isMobileMenuOpen ? (
+              <X className="h-6 w-6 relative z-10 transition-all duration-500 rotate-180 scale-125" />
+            ) : (
+              <Menu className="h-6 w-6 relative z-10 transition-all duration-300 group-hover:rotate-90" />
+            )}
+          </div>
+          {/* Indicador de notificación */}
+          <div className="absolute -top-1 -right-1 w-3 h-3 bg-accent-200 rounded-full animate-ping" />
+          <div className="absolute -top-1 -right-1 w-3 h-3 bg-accent-200 rounded-full" />
+        </button>
+
+        {/* Overlay con efecto glassmorphism y blur dinámico */}
+        <div
+          className={cn(
+            "lg:hidden fixed inset-0 z-40 transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)]",
+            isMobileMenuOpen
+              ? "opacity-100 visible"
+              : "opacity-0 invisible pointer-events-none",
+          )}
+          onClick={() => setIsMobileMenuOpen(false)}
+          aria-hidden={!isMobileMenuOpen}
+        >
+          {/* Overlay degradado con blur */}
+          <div
+            className={cn(
+              "absolute inset-0 bg-gradient-to-br from-black/70 via-black/60 to-black/80 backdrop-blur-xl transition-all duration-700",
+              isMobileMenuOpen ? "opacity-100" : "opacity-0",
+            )}
+          />
+
+          {/* Efecto de partículas en el overlay */}
+          <div className="absolute inset-0">
+            {[...Array(8)].map((_, i) => (
+              <div
+                key={i}
+                className="absolute w-1 h-1 bg-primary-300/30 rounded-full animate-float"
+                style={{
+                  left: `${10 + i * 10}%`,
+                  top: `${20 + Math.random() * 60}%`,
+                  animationDelay: `${i * 0.3}s`,
+                  animationDuration: `${8 + Math.random() * 5}s`,
+                }}
+              />
+            ))}
+          </div>
+        </div>
+
+        {/* Sidebar con diseño moderno y animaciones fluidas */}
+        <div
+          className={cn(
+            "lg:hidden fixed inset-y-0 right-0 z-50 w-80 md:w-88 transform transition-all duration-800 ease-[cubic-bezier(0.16,1,0.3,1)]",
+            isMobileMenuOpen
+              ? "translate-x-0 opacity-100"
+              : "translate-x-full opacity-0 pointer-events-none",
+          )}
+          onClick={(e) => e.stopPropagation()}
+        >
+          {/* Fondo del sidebar con gradiente y efectos */}
+          <div className="absolute inset-0 bg-gradient-to-br from-neutral-900/95 via-neutral-800/95 to-neutral-900/95 backdrop-blur-2xl border-l border-primary-300/20 shadow-2xl shadow-black/50">
+            {/* Efecto de luz en el borde izquierdo */}
+            <div className="absolute left-0 inset-y-0 w-1 bg-gradient-to-b from-primary-100 via-primary-300 to-primary-200 opacity-50" />
+
+            {/* Efecto de brillo interno */}
+            <div className="absolute inset-0 bg-gradient-to-br from-primary-300/5 via-transparent to-accent-100/5" />
+          </div>
+
+          {/* Contenido del sidebar */}
+          <div className="relative z-10 h-full flex flex-col">
+            {/* Header del sidebar */}
+            <div className="p-6 pt-8 border-b border-primary-300/10">
+              <div className="flex items-center space-x-3 mb-4 transform transition-all duration-500 delay-100 translate-y-0 opacity-100">
+                <div className="relative">
+                  <div className="w-12 h-12 bg-gradient-to-br from-primary-100 to-primary-300 rounded-2xl flex items-center justify-center shadow-lg animate-float-subtle">
+                    <Brain className="h-6 w-6 text-white" />
+                  </div>
+                  <div className="absolute -top-1 -right-1 w-4 h-4 bg-accent-200 rounded-full animate-pulse" />
+                </div>
+                <div className="flex-1">
+                  <h2 className="text-xl font-bold text-text-100">
+                    FinanzasIA
+                  </h2>
+                  <p className="text-sm text-primary-300/80 flex items-center">
+                    <span className="w-2 h-2 bg-primary-300 rounded-full mr-2 animate-pulse" />
+                    Proyecto de Tesis Universitaria
+                  </p>
+                </div>
+                <button
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className="p-2 rounded-lg bg-primary-300/10 hover:bg-primary-300/20 transition-colors duration-300"
+                >
+                  <X className="h-5 w-5 text-primary-300" />
+                </button>
+              </div>
+
+              {/* Estado del sistema */}
+              <div className="mt-4 p-3 rounded-xl bg-gradient-to-r from-primary-100/10 to-primary-300/10 border border-primary-300/20 backdrop-blur-sm">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center space-x-2">
+                    <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse" />
+                    <span className="text-xs text-text-100/90">
+                      Sistema Activo
+                    </span>
+                  </div>
+                  <span className="text-xs font-medium text-primary-300">
+                    v2.1.0
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            {/* Navegación principal */}
+            <div className="flex-1 overflow-y-auto p-6">
+              <div className="space-y-1">
+                <h3 className="text-xs font-semibold text-text-200/60 uppercase tracking-wider mb-4 px-2 transform transition-all duration-500 delay-150 translate-y-0 opacity-100">
+                  Navegación
+                </h3>
+
+                <Button
+                  variant="ghost"
+                  className="w-full justify-start text-text-100 hover:text-primary-300 hover:bg-primary-300/10 group transform transition-all duration-500 delay-200 translate-x-0 opacity-100 hover:translate-x-2 active:scale-95 rounded-xl py-6"
+                  onClick={handleNavigateToFeatures}
+                >
+                  <div className="relative flex items-center w-full">
+                    <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary-100/20 to-primary-300/20 flex items-center justify-center mr-3 group-hover:scale-110 transition-transform duration-300">
+                      <Sparkles className="h-5 w-5 text-primary-300 group-hover:animate-spin-slow" />
+                    </div>
+                    <div className="flex-1 text-left">
+                      <span className="font-medium">Características</span>
+                      <p className="text-xs text-text-200/70 mt-0.5">
+                        Descubre todas las funciones
+                      </p>
+                    </div>
+                    <ChevronRight className="h-4 w-4 text-text-200/50 group-hover:text-primary-300 group-hover:translate-x-1 transition-all duration-300" />
+                  </div>
+                </Button>
+
+                <Button
+                  variant="ghost"
+                  className="w-full justify-start text-text-100 hover:text-accent-300 hover:bg-accent-300/10 group transform transition-all duration-500 delay-250 translate-x-0 opacity-100 hover:translate-x-2 active:scale-95 rounded-xl py-6"
+                  onClick={handleNavigateToHelp}
+                >
+                  <div className="relative flex items-center w-full">
+                    <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-accent-100/20 to-accent-200/20 flex items-center justify-center mr-3 group-hover:scale-110 transition-transform duration-300">
+                      <HelpCircle className="h-5 w-5 text-accent-300 group-hover:animate-bounce-subtle" />
+                    </div>
+                    <div className="flex-1 text-left">
+                      <span className="font-medium">Ayuda & Soporte</span>
+                      <p className="text-xs text-text-200/70 mt-0.5">
+                        Asistencia 24/7 disponible
+                      </p>
+                    </div>
+                    <ExternalLink className="h-4 w-4 text-text-200/50 group-hover:text-accent-300 transition-all duration-300" />
+                  </div>
+                </Button>
+
+                <Button
+                  variant="ghost"
+                  className="w-full justify-start text-text-100 hover:text-text-100 hover:bg-bg-300/20 group transform transition-all duration-500 delay-300 translate-x-0 opacity-100 hover:translate-x-2 active:scale-95 rounded-xl py-6"
+                  onClick={handleNavigateToGithub}
+                >
+                  <div className="relative flex items-center w-full">
+                    <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-gray-800 to-gray-900 flex items-center justify-center mr-3 group-hover:scale-110 transition-transform duration-300">
+                      <Github className="h-5 w-5 text-gray-300 group-hover:rotate-12 transition-transform duration-300" />
+                    </div>
+                    <div className="flex-1 text-left">
+                      <span className="font-medium">GitHub</span>
+                      <p className="text-xs text-text-200/70 mt-0.5">
+                        Código fuente abierto
+                      </p>
+                    </div>
+                    <ExternalLink className="h-4 w-4 text-text-200/50 group-hover:text-gray-300 transition-all duration-300" />
+                  </div>
+                </Button>
+              </div>
+
+              {/* Separador decorativo */}
+              <div className="relative my-8">
+                <div className="absolute inset-0 flex items-center">
+                  <div className="w-full border-t border-primary-300/10" />
+                </div>
+                <div className="relative flex justify-center">
+                  <span className="px-3 text-xs text-primary-300/50 bg-neutral-900/50 rounded-full">
+                    Acciones rápidas
+                  </span>
+                </div>
+              </div>
+
+              {/* Botones de acción */}
+              <div className="space-y-3 transform transition-all duration-500 delay-400 translate-y-0 opacity-100">
+                <Button
+                  className="w-full bg-gradient-to-r from-primary-100 to-primary-200 hover:from-primary-200 hover:to-primary-300 text-white group transform transition-all duration-500 hover:scale-[1.02] active:scale-95 rounded-xl py-6 shadow-xl hover:shadow-primary-100/40"
+                  onClick={handleNavigateToLogin}
+                >
+                  <div className="flex items-center justify-between w-full">
+                    <div className="flex items-center">
+                      <Rocket className="h-5 w-5 mr-3 group-hover:animate-bounce" />
+                      <div className="text-left">
+                        <span className="font-semibold">Comenzar Ahora</span>
+                        <p className="text-xs opacity-90 mt-0.5">
+                          Acceso gratuito inmediato
+                        </p>
+                      </div>
+                    </div>
+                    <ArrowRight className="h-5 w-5 opacity-0 group-hover:opacity-100 group-hover:translate-x-2 transition-all duration-300" />
+                  </div>
+                </Button>
+
+                <Button
+                  variant="outline"
+                  className="w-full border-primary-300/30 text-primary-300 hover:bg-primary-300/10 hover:border-primary-300 group transform transition-all duration-500 hover:scale-[1.02] active:scale-95 rounded-xl py-6"
+                  onClick={handleNavigateToUniversity}
+                >
+                  <div className="flex items-center justify-between w-full">
+                    <div className="flex items-center">
+                      <GraduationCap className="h-5 w-5 mr-3 group-hover:scale-110 transition-transform duration-300" />
+                      <div className="text-left">
+                        <span className="font-semibold">
+                          Portal Universitario
+                        </span>
+                        <p className="text-xs text-primary-300/80 mt-0.5">
+                          URBE - Proyecto de Tesis
+                        </p>
+                      </div>
+                    </div>
+                    <ExternalLink className="h-4 w-4 opacity-0 group-hover:opacity-100 transition-all duration-300" />
+                  </div>
+                </Button>
+              </div>
+
+              {/* Información adicional */}
+              <div className="mt-8 p-4 rounded-xl bg-gradient-to-br from-bg-300/30 to-bg-300/10 border border-bg-300/20 backdrop-blur-sm transform transition-all duration-500 delay-500 translate-y-0 opacity-100">
+                <div className="flex items-start space-x-3">
+                  <ShieldCheck className="h-5 w-5 text-primary-300 mt-0.5" />
+                  <div>
+                    <p className="text-sm text-text-100/90">
+                      <span className="font-semibold text-primary-300">
+                        100% Seguro
+                      </span>
+                      <br />
+                      <span className="text-xs text-text-200/70">
+                        Tus datos están encriptados y protegidos
+                      </span>
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Footer del sidebar */}
+            <div className="p-6 pt-4 border-t border-primary-300/10 transform transition-all duration-500 delay-600 translate-y-0 opacity-100">
+              <div className="text-center">
+                <p className="text-xs text-text-200/50">
+                  © 2026 FinanzasIA
+                  <br />
+                  <span className="text-[10px] text-text-200/30">
+                    Proyecto de Tesis - Ingeniería en Informática
+                  </span>
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </>
+    );
   };
 
   return (
@@ -194,7 +521,10 @@ const LandingPage: React.FC = () => {
         {/* Navbar Glassmorphism */}
         <nav className="relative z-30 container mx-auto px-6 py-6">
           <div className="flex justify-between items-center">
-            <div className="flex items-center space-x-4 group cursor-pointer">
+            <div
+              className="flex items-center space-x-4 group cursor-pointer"
+              onClick={() => navigate("/")}
+            >
               <div className="relative">
                 <div className="w-12 h-12 bg-gradient-to-br from-primary-100 to-primary-300 rounded-2xl flex items-center justify-center shadow-2xl shadow-primary-100/30 group-hover:shadow-primary-300/40 transition-all duration-500 group-hover:scale-110">
                   <Brain className="h-6 w-6" />
@@ -213,10 +543,12 @@ const LandingPage: React.FC = () => {
               </div>
             </div>
 
-            <div className="hidden md:flex items-center space-x-6">
+            {/* Desktop Menu - CAMBIADO hidden md:flex → hidden lg:flex */}
+            <div className="hidden lg:flex items-center space-x-6">
               <Button
                 variant="ghost"
                 className="text-text-200 hover:text-primary-300 hover:bg-bg-300/50 transition-all duration-300 group"
+                onClick={handleNavigateToFeatures}
               >
                 <span className="relative">
                   Características
@@ -226,22 +558,28 @@ const LandingPage: React.FC = () => {
               <Button
                 variant="ghost"
                 className="text-text-200 hover:text-primary-300 hover:bg-bg-300/50 transition-all duration-300 group"
+                onClick={handleNavigateToHelp}
               >
                 <span className="relative">
-                  Demo
+                  Ayuda & Soporte
                   <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-primary-300 group-hover:w-full transition-all duration-300" />
                 </span>
               </Button>
               <Button
                 variant="ghost"
                 className="text-text-200 hover:text-primary-300 hover:bg-bg-300/50 transition-all duration-300 group"
+                onClick={handleNavigateToGithub}
               >
                 <span className="relative">
-                  Documentación
+                  <Github className="h-4 w-4 mr-2 inline" />
+                  GitHub
                   <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-primary-300 group-hover:w-full transition-all duration-300" />
                 </span>
               </Button>
-              <Button className="bg-gradient-to-r from-primary-100 to-primary-200 hover:from-primary-200 hover:to-primary-300 shadow-lg shadow-primary-100/25 hover:shadow-primary-200/35 transition-all duration-300 group">
+              <Button
+                className="bg-gradient-to-r from-primary-100 to-primary-200 hover:from-primary-200 hover:to-primary-300 shadow-lg shadow-primary-100/25 hover:shadow-primary-200/35 transition-all duration-300 group"
+                onClick={handleNavigateToLogin}
+              >
                 <span className="flex items-center">
                   Comenzar Ahora
                   <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
@@ -250,6 +588,9 @@ const LandingPage: React.FC = () => {
             </div>
           </div>
         </nav>
+
+        {/* Mobile Menu */}
+        <MobileMenu />
 
         {/* Hero Content */}
         <div className="relative z-10 container mx-auto px-6 py-24">
@@ -265,16 +606,16 @@ const LandingPage: React.FC = () => {
             </div>
 
             {/* Título principal */}
-            <h1 className="text-5xl md:text-7xl font-bold mb-8 leading-tight animate-fade-in-up">
+            <h1 className="text-4xl md:text-5xl lg:text-7xl font-bold mb-8 leading-tight animate-fade-in-up">
               <span className="block text-text-100">Domina tus</span>
               <span className="bg-gradient-to-r from-primary-100 via-primary-200 to-primary-300 bg-clip-text text-transparent animate-gradient-x relative inline-block">
                 Finanzas con IA
-                <Sparkles className="absolute -top-4 -right-6 h-8 w-8 text-primary-300 animate-spin-slow" />
+                <Sparkles className="absolute -top-4 -right-6 h-6 w-6 lg:h-8 lg:w-8 text-primary-300 animate-spin-slow" />
               </span>
             </h1>
 
             {/* Subtítulo */}
-            <p className="text-xl text-text-200 mb-12 max-w-3xl mx-auto animate-fade-in-up animation-delay-500">
+            <p className="text-lg md:text-xl text-text-200 mb-12 max-w-3xl mx-auto animate-fade-in-up animation-delay-500">
               Sistema inteligente que combina{" "}
               <span className="text-primary-300 font-semibold relative inline-block">
                 Machine Learning
@@ -285,61 +626,66 @@ const LandingPage: React.FC = () => {
             </p>
 
             {/* CTA Buttons */}
-            <div className="flex flex-col sm:flex-row gap-6 justify-center mb-16 animate-fade-in-up animation-delay-700">
+            <div className="flex flex-col sm:flex-row gap-4 md:gap-6 justify-center mb-16 animate-fade-in-up animation-delay-700">
               <Button
                 size="lg"
-                className="px-10 py-7 text-lg font-semibold bg-gradient-to-r from-primary-100 to-primary-200 hover:from-primary-200 hover:to-primary-300 shadow-2xl shadow-primary-100/30 hover:shadow-primary-200/40 transition-all duration-300 group relative overflow-hidden"
+                className="px-6 md:px-10 py-6 md:py-7 text-lg font-semibold bg-gradient-to-r from-primary-100 to-primary-200 hover:from-primary-200 hover:to-primary-300 shadow-2xl shadow-primary-100/30 hover:shadow-primary-200/40 transition-all duration-300 group relative overflow-hidden"
+                onClick={handleNavigateToRegister}
               >
                 <div className="absolute inset-0 bg-gradient-to-r from-primary-200 to-primary-300 translate-x-[-100%] group-hover:translate-x-0 transition-transform duration-500" />
                 <span className="relative z-10 flex items-center">
-                  <Zap className="mr-3 h-5 w-5 group-hover:rotate-12 transition-transform" />
-                  Comenzar Demo Gratis
+                  <User className="mr-3 h-5 w-5 group-hover:rotate-12 transition-transform" />
+                  <span className="hidden sm:inline">Registrate y Ahorra</span>
+                  <span className="sm:hidden">Regístrate</span>
                   <ArrowRight className="ml-3 h-5 w-5 group-hover:translate-x-2 transition-transform" />
                 </span>
               </Button>
-
               <Button
                 size="lg"
                 variant="outline"
-                className="px-10 py-7 text-lg font-semibold border-2 border-primary-300/50 text-primary-300 hover:bg-primary-300/10 hover:border-primary-300 hover:shadow-lg hover:shadow-primary-300/20 transition-all duration-300 group"
+                className="px-6 md:px-10 py-6 md:py-7 text-lg font-semibold border-2 border-primary-300/50 text-primary-300 hover:bg-primary-300/10 hover:border-primary-300 hover:shadow-lg hover:shadow-primary-300/20 transition-all duration-300 group"
+                onClick={handleNavigateToUniversity}
               >
-                <Lock className="mr-3 h-5 w-5 group-hover:scale-110 transition-transform" />
-                Ver Demo Segura
+                <GraduationCap className="mr-3 h-5 w-5 group-hover:scale-110 transition-transform" />
+                <span className="hidden sm:inline">
+                  Conoce Nuestra Universidad
+                </span>
+                <span className="sm:hidden">Universidad</span>
                 <TrendingUp className="ml-3 h-5 w-5 opacity-0 group-hover:opacity-100 transition-all duration-300" />
               </Button>
             </div>
 
             {/* Stats */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-3xl mx-auto animate-fade-in-up animation-delay-900">
-              <div className="text-center p-6 rounded-2xl bg-bg-300/30 backdrop-blur-sm hover:bg-bg-300/50 transition-all duration-300 group">
-                <div className="text-3xl font-bold text-primary-300 mb-1 group-hover:scale-110 transition-transform">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 max-w-3xl mx-auto animate-fade-in-up animation-delay-900">
+              <div className="text-center p-4 md:p-6 rounded-2xl bg-bg-300/30 backdrop-blur-sm hover:bg-bg-300/50 transition-all duration-300 group">
+                <div className="text-2xl md:text-3xl font-bold text-primary-300 mb-1 group-hover:scale-110 transition-transform">
                   95%
                 </div>
-                <div className="text-sm text-text-200 group-hover:text-text-100 transition-colors">
+                <div className="text-xs md:text-sm text-text-200 group-hover:text-text-100 transition-colors">
                   Precisión IA
                 </div>
               </div>
-              <div className="text-center p-6 rounded-2xl bg-bg-300/30 backdrop-blur-sm hover:bg-bg-300/50 transition-all duration-300 group">
-                <div className="text-3xl font-bold text-primary-300 mb-1 group-hover:scale-110 transition-transform">
+              <div className="text-center p-4 md:p-6 rounded-2xl bg-bg-300/30 backdrop-blur-sm hover:bg-bg-300/50 transition-all duration-300 group">
+                <div className="text-2xl md:text-3xl font-bold text-primary-300 mb-1 group-hover:scale-110 transition-transform">
                   24/7
                 </div>
-                <div className="text-sm text-text-200 group-hover:text-text-100 transition-colors">
+                <div className="text-xs md:text-sm text-text-200 group-hover:text-text-100 transition-colors">
                   Monitoreo
                 </div>
               </div>
-              <div className="text-center p-6 rounded-2xl bg-bg-300/30 backdrop-blur-sm hover:bg-bg-300/50 transition-all duration-300 group">
-                <div className="text-3xl font-bold text-primary-300 mb-1 group-hover:scale-110 transition-transform">
+              <div className="text-center p-4 md:p-6 rounded-2xl bg-bg-300/30 backdrop-blur-sm hover:bg-bg-300/50 transition-all duration-300 group">
+                <div className="text-2xl md:text-3xl font-bold text-primary-300 mb-1 group-hover:scale-110 transition-transform">
                   100%
                 </div>
-                <div className="text-sm text-text-200 group-hover:text-text-100 transition-colors">
+                <div className="text-xs md:text-sm text-text-200 group-hover:text-text-100 transition-colors">
                   Privacidad
                 </div>
               </div>
-              <div className="text-center p-6 rounded-2xl bg-bg-300/30 backdrop-blur-sm hover:bg-bg-300/50 transition-all duration-300 group">
-                <div className="text-3xl font-bold text-primary-300 mb-1 group-hover:scale-110 transition-transform">
+              <div className="text-center p-4 md:p-6 rounded-2xl bg-bg-300/30 backdrop-blur-sm hover:bg-bg-300/50 transition-all duration-300 group">
+                <div className="text-2xl md:text-3xl font-bold text-primary-300 mb-1 group-hover:scale-110 transition-transform">
                   0$
                 </div>
-                <div className="text-sm text-text-200 group-hover:text-text-100 transition-colors">
+                <div className="text-xs md:text-sm text-text-200 group-hover:text-text-100 transition-colors">
                   Costo Inicial
                 </div>
               </div>
@@ -349,13 +695,20 @@ const LandingPage: React.FC = () => {
       </div>
 
       {/* Resto de la landing - Todo negro */}
-      <div className="bg-gradient-to-br from-neutral-950 via-neutral-900 to-neutral-800">
+      <div className="bg-gradient-to-br from-neutral-950 via-neutral-900 to-neutral-800 relative overflow-hidden">
+        {/* Fondos animados para toda la sección */}
+        <div className="absolute inset-0">
+          <div className="absolute top-20 left-1/4 w-[300px] h-[300px] md:w-[500px] md:h-[500px] bg-primary-300/10 rounded-full blur-3xl animate-pulse-glow" />
+          <div className="absolute top-60 right-1/4 w-[250px] h-[250px] md:w-[400px] md:h-[400px] bg-accent-100/10 rounded-full blur-3xl animate-pulse-glow animation-delay-2000" />
+          <div className="absolute -bottom-40 left-1/3 w-[350px] h-[350px] md:w-[600px] md:h-[600px] bg-primary-200/5 rounded-full blur-3xl animate-pulse-glow animation-delay-4000" />
+        </div>
+
         {/* Features Section */}
-        <section className="container mx-auto px-6 py-20">
+        <section className="container mx-auto px-6 py-20 relative z-10">
           <div className="text-center mb-16 animate-fade-in-up">
             <div className="inline-flex items-center space-x-4 mb-6">
               <div className="w-4 h-4 bg-primary-300 rounded-full animate-pulse" />
-              <h2 className="text-4xl font-bold">
+              <h2 className="text-3xl md:text-4xl font-bold">
                 <span className="text-text-100">Tecnología </span>
                 <span className="bg-gradient-to-r from-primary-200 to-primary-300 bg-clip-text text-transparent">
                   Avanzada
@@ -363,45 +716,57 @@ const LandingPage: React.FC = () => {
               </h2>
               <div className="w-4 h-4 bg-accent-200 rounded-full animate-pulse animation-delay-1000" />
             </div>
-            <p className="text-text-200 max-w-2xl mx-auto text-lg">
+            <p className="text-text-200 max-w-2xl mx-auto text-base md:text-lg">
               Combinamos las mejores herramientas para ofrecerte una experiencia
               única en gestión financiera personal.
             </p>
           </div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
             {features.map((feature, index) => (
               <Card
                 key={index}
                 className="group border-0 bg-gradient-to-br from-bg-200/50 to-bg-300/30 backdrop-blur-sm hover:from-bg-200 hover:to-bg-300 transition-all duration-300 hover:scale-[1.02] hover:shadow-2xl hover:shadow-primary-100/20 relative overflow-hidden animate-fade-in-up"
                 style={{ animationDelay: `${index * 0.1}s` }}
+                onClick={handleNavigateToFeatures}
               >
                 {/* Línea animada superior */}
                 <div className="absolute top-0 left-0 right-0 h-0.5 bg-gradient-to-r from-transparent via-primary-300 to-transparent transform translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000" />
 
-                <CardHeader>
+                {/* Efecto de brillo en hover */}
+                <div className="absolute inset-0 bg-gradient-to-br from-primary-300/0 via-primary-200/0 to-accent-100/0 group-hover:from-primary-300/5 group-hover:via-primary-200/10 group-hover:to-accent-100/5 transition-all duration-500 rounded-xl" />
+
+                <CardHeader className="relative z-10">
                   <div
-                    className={`w-16 h-16 mb-6 rounded-2xl bg-gradient-to-br ${feature.color} flex items-center justify-center shadow-lg group-hover:scale-110 group-hover:rotate-3 transition-all duration-300 relative`}
+                    className={`w-14 h-14 md:w-16 md:h-16 mb-4 md:mb-6 rounded-2xl bg-gradient-to-br ${feature.color} flex items-center justify-center shadow-lg group-hover:scale-110 group-hover:rotate-3 transition-all duration-300 relative overflow-hidden`}
                   >
+                    {/* Efecto de brillo interno */}
+                    <div className="absolute inset-0 bg-gradient-to-br from-white/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                     <div className="text-white relative z-10">
-                      {feature.icon}
+                      {React.cloneElement(feature.icon, {
+                        className: "h-6 w-6 md:h-8 md:w-8",
+                      })}
                     </div>
                     <div className="absolute inset-0 bg-gradient-to-br from-white/20 to-transparent rounded-2xl" />
                   </div>
-                  <CardTitle className="text-2xl text-text-100 group-hover:text-primary-300 transition-colors duration-300 flex items-center">
+                  <CardTitle className="text-xl md:text-2xl text-text-100 group-hover:text-primary-300 transition-colors duration-300 flex items-center">
                     {feature.title}
-                    <ArrowRight className="ml-2 h-5 w-5 opacity-0 group-hover:opacity-100 group-hover:translate-x-2 transition-all duration-300" />
+                    <ArrowRight className="ml-2 h-4 w-4 md:h-5 md:w-5 opacity-0 group-hover:opacity-100 group-hover:translate-x-2 transition-all duration-300" />
                   </CardTitle>
                 </CardHeader>
-                <CardContent>
-                  <p className="text-text-200 mb-6 group-hover:text-text-100/90 transition-colors duration-300">
+                <CardContent className="relative z-10">
+                  <p className="text-text-200 mb-4 md:mb-6 group-hover:text-text-100/90 transition-colors duration-300 text-sm md:text-base">
                     {feature.description}
                   </p>
                   <Button
                     variant="link"
                     className="p-0 text-primary-300 hover:text-primary-200 group-hover:translate-x-2 transition-transform duration-300 relative overflow-hidden"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleNavigateToFeatures();
+                    }}
                   >
-                    <span className="relative z-10">
+                    <span className="relative z-10 text-sm md:text-base">
                       Explorar característica →
                     </span>
                     <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-primary-300 group-hover:w-full transition-all duration-300" />
@@ -412,68 +777,62 @@ const LandingPage: React.FC = () => {
           </div>
         </section>
 
-        {/* Demo Section con dispositivos - ICONOS CORREGIDOS */}
+        {/* Demo Section con dispositivos - SOLUCIÓN CORREGIDA */}
         <section className="py-20 relative overflow-hidden">
           <div className="absolute inset-0 bg-gradient-to-b from-transparent via-primary-300/5 to-transparent" />
 
-          {/* Efecto de fondo tecnológico */}
-          <div className="absolute inset-0 opacity-10">
-            <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_50%,rgba(99,102,241,0.3),transparent_50%)]" />
-            <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_30%,rgba(139,92,246,0.2),transparent_50%)]" />
-          </div>
-
           <div className="container mx-auto px-6 relative">
             <div className="text-center mb-16 animate-fade-in-up">
-              <h2 className="text-4xl md:text-5xl font-bold mb-6">
+              <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-6">
                 <span className="text-text-100">Acceso </span>
                 <span className="bg-gradient-to-r from-primary-100 to-primary-300 bg-clip-text text-transparent">
                   Multiplataforma
                 </span>
               </h2>
-              <p className="text-text-200 max-w-2xl mx-auto text-lg">
+              <p className="text-text-200 max-w-2xl mx-auto text-base md:text-lg">
                 Utiliza nuestra plataforma desde cualquier dispositivo con
                 sincronización en tiempo real y experiencia optimizada
               </p>
             </div>
 
             <div className="flex flex-col lg:flex-row justify-center items-center space-y-20 lg:space-y-0 lg:space-x-8 xl:space-x-12">
-              {/* Mobile - Ícono a la izquierda superior */}
+              {/* Mobile - RESPONSIVE */}
               <div className="relative group animate-fade-in-up animation-delay-200">
                 <div className="relative">
-                  <div className="w-64 h-[500px] rounded-[3.5rem] bg-gradient-to-b from-bg-200 to-bg-300 border-[14px] border-bg-300 shadow-2xl shadow-primary-100/20 transition-all duration-500 group-hover:scale-105 group-hover:shadow-primary-300/40">
+                  <div className="w-64 md:w-72 h-[500px] rounded-[3.5rem] bg-gradient-to-b from-bg-200 to-bg-300 border-[14px] border-bg-300 shadow-2xl shadow-primary-100/20 transition-all duration-500 group-hover:scale-105 group-hover:shadow-primary-300/40">
                     <div className="w-full h-12 bg-bg-300 rounded-t-[2.8rem] flex items-center justify-between px-8">
                       <div className="w-3 h-3 rounded-full bg-text-100/70" />
-                      <div className="w-20 h-4 bg-text-100/30 rounded-full" />
-                      <div className="w-8 h-2 bg-text-100/30 rounded-full" />
+                      <div className="w-16 md:w-20 h-4 bg-text-100/30 rounded-full" />
+                      <div className="w-6 md:w-8 h-2 bg-text-100/30 rounded-full" />
                     </div>
-                    <div className="p-8 h-full">
+                    <div className="p-6 md:p-8 h-full">
                       <div className="h-12 w-full rounded-xl bg-gradient-to-r from-primary-100/30 to-primary-300/20 mb-6 flex items-center justify-between px-4">
                         <div className="flex items-center space-x-3">
                           <div className="w-8 h-8 rounded-full bg-primary-300/30 flex items-center justify-center">
                             <Wallet className="h-4 w-4 text-primary-300" />
                           </div>
                           <div>
-                            <div className="h-2 w-16 bg-text-100/40 rounded-full mb-1" />
-                            <div className="h-1 w-12 bg-text-100/20 rounded-full" />
+                            <div className="h-2 w-12 md:w-16 bg-text-100/40 rounded-full mb-1" />
+                            <div className="h-1 w-8 md:w-12 bg-text-100/20 rounded-full" />
                           </div>
                         </div>
-                        <div className="h-6 w-12 bg-primary-300/40 rounded-lg" />
+                        <div className="h-6 w-10 md:w-12 bg-primary-300/40 rounded-lg" />
                       </div>
 
-                      <div className="space-y-4 mb-8">
+                      <div className="space-y-4 mb-6 md:mb-8">
                         <div className="h-8 w-full rounded-lg bg-gradient-to-r from-accent-100/20 to-accent-200/20 flex items-center px-4 justify-between">
-                          <div className="h-2 w-24 bg-text-100/40 rounded-full" />
-                          <div className="h-4 w-8 bg-text-100/30 rounded" />
+                          <div className="h-2 w-16 md:w-24 bg-text-100/40 rounded-full" />
+                          <div className="h-4 w-6 md:w-8 bg-text-100/30 rounded" />
                         </div>
                         <div className="h-8 w-full rounded-lg bg-gradient-to-r from-bg-300/50 to-bg-200/30 flex items-center px-4 justify-between">
-                          <div className="h-2 w-20 bg-text-100/40 rounded-full" />
-                          <div className="h-4 w-6 bg-text-100/30 rounded" />
+                          <div className="h-2 w-12 md:w-20 bg-text-100/40 rounded-full" />
+                          <div className="h-4 w-4 md:w-6 bg-text-100/30 rounded" />
                         </div>
                       </div>
 
-                      <div className="h-48 rounded-2xl bg-gradient-to-br from-primary-100/10 to-primary-300/5 border border-primary-300/20 p-4">
+                      <div className="h-40 md:h-48 rounded-2xl bg-gradient-to-br from-primary-100/10 to-primary-300/5 border border-primary-300/20 p-4">
                         <div className="flex justify-between items-center mb-4">
-                          <div className="h-2 w-16 bg-text-100/30 rounded-full" />
+                          <div className="h-2 w-12 md:w-16 bg-text-100/30 rounded-full" />
                           <div className="h-6 w-6 rounded-full bg-primary-300/30 flex items-center justify-center">
                             <PieChart className="h-3 w-3 text-primary-300" />
                           </div>
@@ -482,7 +841,7 @@ const LandingPage: React.FC = () => {
                           {[...Array(4)].map((_, i) => (
                             <div
                               key={i}
-                              className="h-16 rounded-lg bg-gradient-to-br from-primary-300/10 to-primary-100/5"
+                              className="h-14 md:h-16 rounded-lg bg-gradient-to-br from-primary-300/10 to-primary-100/5"
                             />
                           ))}
                         </div>
@@ -491,12 +850,10 @@ const LandingPage: React.FC = () => {
                   </div>
                 </div>
 
-                {/* Ícono de smartphone - A la izquierda superior, más grande, con animación spin */}
-                <Smartphone className="absolute -top-6 -left-6 h-16 w-16 text-primary-300 animate-spin-slow" />
+                <Smartphone className="absolute -top-4 -left-4 md:-top-6 md:-left-6 h-12 w-12 md:h-16 md:w-16 text-primary-300 animate-spin-slow" />
 
-                {/* Etiqueta Mobile First - Centrada abajo */}
-                <div className="absolute -bottom-16 left-1/2 transform -translate-x-1/2 text-center w-48">
-                  <p className="text-sm font-semibold text-primary-300 flex items-center justify-center mb-1">
+                <div className="absolute -bottom-14 md:-bottom-16 left-1/2 transform -translate-x-1/2 text-center w-40 md:w-48">
+                  <p className="text-xs md:text-sm font-semibold text-primary-300 flex items-center justify-center mb-1">
                     <Smartphone className="h-3 w-3 mr-2" />
                     Mobile First
                   </p>
@@ -504,73 +861,152 @@ const LandingPage: React.FC = () => {
                 </div>
               </div>
 
-              {/* Desktop - Ícono más grande con animación spin */}
+              {/* Desktop - SOLUCIÓN CORREGIDA: MÁS PEQUEÑO SOLO EN MÓVIL */}
               <div className="relative group animate-fade-in-up animation-delay-400">
                 <div className="relative">
-                  <div className="w-[600px] h-[400px] rounded-3xl bg-gradient-to-b from-bg-200 to-bg-300 border-[12px] border-bg-300 shadow-2xl shadow-primary-100/20 transition-all duration-500 group-hover:scale-105 group-hover:shadow-primary-300/40">
-                    <div className="w-full h-10 bg-bg-300 rounded-t-2xl flex items-center justify-between px-6">
-                      <div className="flex space-x-2">
-                        <div className="w-3 h-3 rounded-full bg-accent-200 animate-pulse" />
-                        <div className="w-3 h-3 rounded-full bg-primary-300 animate-pulse animation-delay-500" />
-                        <div className="w-3 h-3 rounded-full bg-text-200/50 animate-pulse animation-delay-1000" />
+                  {/* VERSIÓN DESKTOP ORIGINAL (≥768px) */}
+                  <div className="hidden md:block">
+                    <div className="w-[600px] h-[400px] rounded-3xl bg-gradient-to-b from-bg-200 to-bg-300 border-[12px] border-bg-300 shadow-2xl shadow-primary-100/20 transition-all duration-500 group-hover:scale-105 group-hover:shadow-primary-300/40">
+                      <div className="w-full h-10 bg-bg-300 rounded-t-2xl flex items-center justify-between px-6">
+                        <div className="flex space-x-2">
+                          <div className="w-3 h-3 rounded-full bg-accent-200 animate-pulse" />
+                          <div className="w-3 h-3 rounded-full bg-primary-300 animate-pulse animation-delay-500" />
+                          <div className="w-3 h-3 rounded-full bg-text-200/50 animate-pulse animation-delay-1000" />
+                        </div>
+                        <div className="w-40 h-2 bg-text-200/30 rounded-full" />
+                        <div className="w-20 h-3 bg-text-200/20 rounded-full" />
                       </div>
-                      <div className="w-40 h-2 bg-text-200/30 rounded-full" />
-                      <div className="w-20 h-3 bg-text-200/20 rounded-full" />
+
+                      <div className="p-8">
+                        <div className="grid grid-cols-3 gap-6 mb-6">
+                          {[...Array(3)].map((_, i) => (
+                            <div
+                              key={i}
+                              className="h-20 rounded-xl bg-gradient-to-br from-primary-100/15 to-primary-300/10 p-4"
+                            >
+                              <div className="flex items-center justify-between mb-2">
+                                <div className="h-2 w-12 bg-text-100/40 rounded-full" />
+                                <div className="h-4 w-4 rounded-full bg-primary-300/30 flex items-center justify-center">
+                                  {i === 0 && (
+                                    <TrendingUp className="h-2 w-2 text-primary-300" />
+                                  )}
+                                  {i === 1 && (
+                                    <PieChart className="h-2 w-2 text-primary-300" />
+                                  )}
+                                  {i === 2 && (
+                                    <Calendar className="h-2 w-2 text-primary-300" />
+                                  )}
+                                </div>
+                              </div>
+                              <div className="h-4 w-16 bg-text-100/30 rounded-full mb-1" />
+                              <div className="h-1 w-full bg-text-100/10 rounded-full" />
+                            </div>
+                          ))}
+                        </div>
+
+                        <div className="grid grid-cols-2 gap-6">
+                          <div className="h-48 rounded-2xl bg-gradient-to-br from-accent-100/10 to-accent-200/5 border border-accent-300/20 p-4">
+                            <div className="flex justify-between items-center mb-4">
+                              <div className="h-2 w-24 bg-text-100/40 rounded-full" />
+                              <LineChart className="h-4 w-4 text-accent-300" />
+                            </div>
+                            <div className="space-y-3">
+                              {[...Array(4)].map((_, i) => (
+                                <div key={i} className="flex items-center">
+                                  <div className="h-2 w-full bg-gradient-to-r from-accent-100/30 to-accent-200/20 rounded-full" />
+                                  <div className="ml-2 h-3 w-6 bg-text-100/20 rounded" />
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+
+                          <div className="h-48 rounded-2xl bg-gradient-to-br from-primary-300/10 to-primary-100/5 border border-primary-300/20 p-4">
+                            <div className="flex justify-between items-center mb-4">
+                              <div className="h-2 w-20 bg-text-100/40 rounded-full" />
+                              <BarChart3 className="h-4 w-4 text-primary-300" />
+                            </div>
+                            <div className="flex items-end justify-between h-32 px-2">
+                              {[...Array(5)].map((_, i) => (
+                                <div
+                                  key={i}
+                                  className="w-10 bg-gradient-to-t from-primary-100/40 to-primary-300/30 rounded-t-lg"
+                                  style={{
+                                    height: `${30 + Math.random() * 70}%`,
+                                  }}
+                                />
+                              ))}
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* VERSIÓN MÓVIL PEQUEÑA (<768px) - SOLO MÁS PEQUEÑA */}
+                  <div className="md:hidden w-full max-w-[400px] h-[300px] rounded-2xl bg-gradient-to-b from-bg-200 to-bg-300 border-[10px] border-bg-300 shadow-2xl shadow-primary-100/20 transition-all duration-500 group-hover:scale-105 group-hover:shadow-primary-300/40 mx-auto">
+                    <div className="w-full h-8 bg-bg-300 rounded-t-xl flex items-center justify-between px-4">
+                      <div className="flex space-x-1">
+                        <div className="w-2 h-2 rounded-full bg-accent-200 animate-pulse" />
+                        <div className="w-2 h-2 rounded-full bg-primary-300 animate-pulse animation-delay-500" />
+                        <div className="w-2 h-2 rounded-full bg-text-200/50 animate-pulse animation-delay-1000" />
+                      </div>
+                      <div className="w-24 h-1.5 bg-text-200/30 rounded-full" />
+                      <div className="w-12 h-2 bg-text-200/20 rounded-full" />
                     </div>
 
-                    <div className="p-8">
-                      <div className="grid grid-cols-3 gap-6 mb-6">
+                    <div className="p-4">
+                      <div className="grid grid-cols-3 gap-2 mb-4">
                         {[...Array(3)].map((_, i) => (
                           <div
                             key={i}
-                            className="h-20 rounded-xl bg-gradient-to-br from-primary-100/15 to-primary-300/10 p-4"
+                            className="h-12 rounded-lg bg-gradient-to-br from-primary-100/15 to-primary-300/10 p-2"
                           >
-                            <div className="flex items-center justify-between mb-2">
-                              <div className="h-2 w-12 bg-text-100/40 rounded-full" />
-                              <div className="h-4 w-4 rounded-full bg-primary-300/30 flex items-center justify-center">
+                            <div className="flex items-center justify-between mb-1">
+                              <div className="h-1.5 w-8 bg-text-100/40 rounded-full" />
+                              <div className="h-3 w-3 rounded-full bg-primary-300/30 flex items-center justify-center">
                                 {i === 0 && (
-                                  <TrendingUp className="h-2 w-2 text-primary-300" />
+                                  <TrendingUp className="h-1.5 w-1.5 text-primary-300" />
                                 )}
                                 {i === 1 && (
-                                  <PieChart className="h-2 w-2 text-primary-300" />
+                                  <PieChart className="h-1.5 w-1.5 text-primary-300" />
                                 )}
                                 {i === 2 && (
-                                  <Calendar className="h-2 w-2 text-primary-300" />
+                                  <Calendar className="h-1.5 w-1.5 text-primary-300" />
                                 )}
                               </div>
                             </div>
-                            <div className="h-4 w-16 bg-text-100/30 rounded-full mb-1" />
-                            <div className="h-1 w-full bg-text-100/10 rounded-full" />
+                            <div className="h-2 w-10 bg-text-100/30 rounded-full mb-0.5" />
+                            <div className="h-0.5 w-full bg-text-100/10 rounded-full" />
                           </div>
                         ))}
                       </div>
 
-                      <div className="grid grid-cols-2 gap-6">
-                        <div className="h-48 rounded-2xl bg-gradient-to-br from-accent-100/10 to-accent-200/5 border border-accent-300/20 p-4">
-                          <div className="flex justify-between items-center mb-4">
-                            <div className="h-2 w-24 bg-text-100/40 rounded-full" />
-                            <LineChart className="h-4 w-4 text-accent-300" />
+                      <div className="grid grid-cols-2 gap-3">
+                        <div className="h-32 rounded-xl bg-gradient-to-br from-accent-100/10 to-accent-200/5 border border-accent-300/20 p-3">
+                          <div className="flex justify-between items-center mb-2">
+                            <div className="h-1.5 w-16 bg-text-100/40 rounded-full" />
+                            <LineChart className="h-3 w-3 text-accent-300" />
                           </div>
-                          <div className="space-y-3">
-                            {[...Array(4)].map((_, i) => (
+                          <div className="space-y-1.5">
+                            {[...Array(3)].map((_, i) => (
                               <div key={i} className="flex items-center">
-                                <div className="h-2 w-full bg-gradient-to-r from-accent-100/30 to-accent-200/20 rounded-full" />
-                                <div className="ml-2 h-3 w-6 bg-text-100/20 rounded" />
+                                <div className="h-1 w-full bg-gradient-to-r from-accent-100/30 to-accent-200/20 rounded-full" />
+                                <div className="ml-1 h-1.5 w-4 bg-text-100/20 rounded" />
                               </div>
                             ))}
                           </div>
                         </div>
 
-                        <div className="h-48 rounded-2xl bg-gradient-to-br from-primary-300/10 to-primary-100/5 border border-primary-300/20 p-4">
-                          <div className="flex justify-between items-center mb-4">
-                            <div className="h-2 w-20 bg-text-100/40 rounded-full" />
-                            <BarChart3 className="h-4 w-4 text-primary-300" />
+                        <div className="h-32 rounded-xl bg-gradient-to-br from-primary-300/10 to-primary-100/5 border border-primary-300/20 p-3">
+                          <div className="flex justify-between items-center mb-2">
+                            <div className="h-1.5 w-12 bg-text-100/40 rounded-full" />
+                            <BarChart3 className="h-3 w-3 text-primary-300" />
                           </div>
-                          <div className="flex items-end justify-between h-32 px-2">
+                          <div className="flex items-end justify-between h-20 px-1">
                             {[...Array(5)].map((_, i) => (
                               <div
                                 key={i}
-                                className="w-10 bg-gradient-to-t from-primary-100/40 to-primary-300/30 rounded-t-lg"
+                                className="w-5 bg-gradient-to-t from-primary-100/40 to-primary-300/30 rounded-t"
                                 style={{
                                   height: `${30 + Math.random() * 70}%`,
                                 }}
@@ -583,13 +1019,11 @@ const LandingPage: React.FC = () => {
                   </div>
                 </div>
 
-                {/* Ícono de monitor - Más grande, con animación spin */}
-                <Monitor className="absolute -top-6 -right-6 h-16 w-16 text-primary-300 animate-spin-slow" />
+                <Monitor className="absolute -top-4 -right-4 md:-top-6 md:-right-6 h-12 w-12 md:h-16 md:w-16 text-primary-300 animate-spin-slow" />
 
-                {/* Etiqueta Web Dashboard */}
-                <div className="absolute -bottom-16 left-1/2 transform -translate-x-1/2 text-center w-48">
-                  <p className="text-sm font-semibold text-primary-300 flex items-center justify-center mb-1">
-                    <Monitor className="h-4 w-4 mr-2" />
+                <div className="absolute -bottom-14 md:-bottom-16 left-1/2 transform -translate-x-1/2 text-center w-40 md:w-48">
+                  <p className="text-xs md:text-sm font-semibold text-primary-300 flex items-center justify-center mb-1">
+                    <Monitor className="h-3 w-3 md:h-4 md:w-4 mr-2" />
                     Web Dashboard
                   </p>
                   <p className="text-xs text-text-200/70">
@@ -598,73 +1032,71 @@ const LandingPage: React.FC = () => {
                 </div>
               </div>
 
-              {/* Tablet - Ícono más grande con animación spin */}
+              {/* Tablet - RESPONSIVE */}
               <div className="relative group animate-fade-in-up animation-delay-600">
                 <div className="relative">
-                  <div className="w-80 h-[500px] rounded-3xl bg-gradient-to-b from-bg-200 to-bg-300 border-[12px] border-bg-300 shadow-2xl shadow-primary-100/20 transition-all duration-500 group-hover:scale-105 group-hover:shadow-primary-300/40">
+                  <div className="w-72 md:w-80 h-[500px] rounded-3xl bg-gradient-to-b from-bg-200 to-bg-300 border-[12px] border-bg-300 shadow-2xl shadow-primary-100/20 transition-all duration-500 group-hover:scale-105 group-hover:shadow-primary-300/40">
                     <div className="w-full h-10 bg-bg-300 rounded-t-2xl flex items-center justify-center">
-                      <div className="w-12 h-1 bg-text-200/50 rounded-full" />
+                      <div className="w-10 md:w-12 h-1 bg-text-200/50 rounded-full" />
                     </div>
 
-                    <div className="p-8">
-                      <div className="flex items-center justify-between mb-8">
+                    <div className="p-6 md:p-8">
+                      <div className="flex items-center justify-between mb-6 md:mb-8">
                         <div className="h-10 w-10 rounded-full bg-gradient-to-br from-primary-100/30 to-primary-300/20 flex items-center justify-center">
                           <Brain className="h-5 w-5 text-primary-300" />
                         </div>
                         <div className="space-y-1">
-                          <div className="h-2 w-24 bg-text-100/40 rounded-full" />
-                          <div className="h-1 w-16 bg-text-100/20 rounded-full" />
+                          <div className="h-2 w-20 md:w-24 bg-text-100/40 rounded-full" />
+                          <div className="h-1 w-12 md:w-16 bg-text-100/20 rounded-full" />
                         </div>
                         <div className="h-8 w-8 rounded-full bg-text-200/10 flex items-center justify-center">
                           <div className="h-4 w-4 rounded-full bg-primary-300/40" />
                         </div>
                       </div>
 
-                      <div className="h-64 rounded-2xl bg-gradient-to-br from-accent-100/10 to-primary-100/5 border border-primary-300/20 p-6 mb-6">
+                      <div className="h-56 md:h-64 rounded-2xl bg-gradient-to-br from-accent-100/10 to-primary-100/5 border border-primary-300/20 p-6 mb-6">
                         <div className="flex justify-between items-center mb-6">
                           <div>
-                            <div className="h-2 w-32 bg-text-100/40 rounded-full mb-2" />
-                            <div className="h-4 w-16 bg-primary-300/30 rounded-lg" />
+                            <div className="h-2 w-24 md:w-32 bg-text-100/40 rounded-full mb-2" />
+                            <div className="h-4 w-14 md:w-16 bg-primary-300/30 rounded-lg" />
                           </div>
                           <CreditCard className="h-6 w-6 text-primary-300/50" />
                         </div>
 
-                        <div className="grid grid-cols-2 gap-4">
+                        <div className="grid grid-cols-2 gap-3 md:gap-4">
                           {[...Array(4)].map((_, i) => (
                             <div
                               key={i}
-                              className="h-20 rounded-xl bg-gradient-to-br from-bg-200/30 to-bg-300/20 p-3"
+                              className="h-16 md:h-20 rounded-xl bg-gradient-to-br from-bg-200/30 to-bg-300/20 p-3"
                             >
-                              <div className="h-2 w-12 bg-text-100/40 rounded-full mb-2" />
-                              <div className="h-6 w-16 bg-primary-300/20 rounded-lg mb-1" />
+                              <div className="h-2 w-10 md:w-12 bg-text-100/40 rounded-full mb-2" />
+                              <div className="h-4 md:h-6 w-14 md:w-16 bg-primary-300/20 rounded-lg mb-1" />
                               <div className="h-1 w-full bg-text-100/10 rounded-full" />
                             </div>
                           ))}
                         </div>
                       </div>
 
-                      <div className="flex justify-center space-x-8">
-                        <div className="h-10 w-10 rounded-full bg-gradient-to-br from-primary-100/20 to-primary-300/10 flex items-center justify-center">
-                          <Home className="h-4 w-4 text-primary-300" />
+                      <div className="flex justify-center space-x-6 md:space-x-8">
+                        <div className="h-8 w-8 md:h-10 md:w-10 rounded-full bg-gradient-to-br from-primary-100/20 to-primary-300/10 flex items-center justify-center">
+                          <Home className="h-3 w-3 md:h-4 md:w-4 text-primary-300" />
                         </div>
-                        <div className="h-10 w-10 rounded-full bg-gradient-to-br from-accent-100/20 to-accent-200/10 flex items-center justify-center">
-                          <PieChart className="h-4 w-4 text-accent-300" />
+                        <div className="h-8 w-8 md:h-10 md:w-10 rounded-full bg-gradient-to-br from-accent-100/20 to-accent-200/10 flex items-center justify-center">
+                          <PieChart className="h-3 w-3 md:h-4 md:w-4 text-accent-300" />
                         </div>
-                        <div className="h-10 w-10 rounded-full bg-gradient-to-br from-primary-300/20 to-primary-100/10 flex items-center justify-center">
-                          <User className="h-4 w-4 text-primary-300" />
+                        <div className="h-8 w-8 md:h-10 md:w-10 rounded-full bg-gradient-to-br from-primary-300/20 to-primary-100/10 flex items-center justify-center">
+                          <User className="h-3 w-3 md:h-4 md:w-4 text-primary-300" />
                         </div>
                       </div>
                     </div>
                   </div>
                 </div>
 
-                {/* Ícono de tablet - Más grande, con animación spin */}
-                <Tablet className="absolute -bottom-8 -right-8 h-16 w-16 text-primary-300 animate-spin-slow" />
+                <Tablet className="absolute -bottom-6 -right-6 md:-bottom-8 md:-right-8 h-12 w-12 md:h-16 md:w-16 text-primary-300 animate-spin-slow" />
 
-                {/* Etiqueta Tablet Ready */}
-                <div className="absolute -bottom-16 left-1/2 transform -translate-x-1/2 text-center w-48">
-                  <p className="text-sm font-semibold text-primary-300 flex items-center justify-center mb-1">
-                    <Tablet className="h-4 w-4 mr-2" />
+                <div className="absolute -bottom-14 md:-bottom-16 left-1/2 transform -translate-x-1/2 text-center w-40 md:w-48">
+                  <p className="text-xs md:text-sm font-semibold text-primary-300 flex items-center justify-center mb-1">
+                    <Tablet className="h-3 w-3 md:h-4 md:w-4 mr-2" />
                     Tablet Ready
                   </p>
                   <p className="text-xs text-text-200/70">iPad & Android</p>
@@ -673,39 +1105,39 @@ const LandingPage: React.FC = () => {
             </div>
 
             {/* Características de sincronización */}
-            <div className="mt-24 grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto animate-fade-in-up animation-delay-800">
-              <div className="text-center p-8 rounded-2xl bg-gradient-to-br from-bg-200/30 to-bg-300/20 backdrop-blur-sm border border-primary-300/10 hover:border-primary-300/30 transition-all duration-300 group">
-                <div className="w-16 h-16 mx-auto mb-6 rounded-full bg-gradient-to-br from-primary-100/20 to-primary-300/10 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                  <RefreshCcw className="h-8 w-8 text-primary-300" />
+            <div className="mt-16 md:mt-24 grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8 max-w-4xl mx-auto animate-fade-in-up animation-delay-800">
+              <div className="text-center p-6 md:p-8 rounded-2xl bg-gradient-to-br from-bg-200/30 to-bg-300/20 backdrop-blur-sm border border-primary-300/10 hover:border-primary-300/30 transition-all duration-300 group">
+                <div className="w-14 h-14 md:w-16 md:h-16 mx-auto mb-4 md:mb-6 rounded-full bg-gradient-to-br from-primary-100/20 to-primary-300/10 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                  <RefreshCcw className="h-6 w-6 md:h-8 md:w-8 text-primary-300" />
                 </div>
-                <h3 className="text-xl font-bold text-text-100 mb-4">
+                <h3 className="text-lg md:text-xl font-bold text-text-100 mb-3 md:mb-4">
                   Sincronización Instantánea
                 </h3>
-                <p className="text-text-200/80">
+                <p className="text-text-200/80 text-sm md:text-base">
                   Cambios reflejados en todos tus dispositivos en tiempo real
                 </p>
               </div>
 
-              <div className="text-center p-8 rounded-2xl bg-gradient-to-br from-bg-200/30 to-bg-300/20 backdrop-blur-sm border border-accent-300/10 hover:border-accent-300/30 transition-all duration-300 group">
-                <div className="w-16 h-16 mx-auto mb-6 rounded-full bg-gradient-to-br from-accent-100/20 to-accent-200/10 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                  <Shield className="h-8 w-8 text-accent-300" />
+              <div className="text-center p-6 md:p-8 rounded-2xl bg-gradient-to-br from-bg-200/30 to-bg-300/20 backdrop-blur-sm border border-accent-300/10 hover:border-accent-300/30 transition-all duration-300 group">
+                <div className="w-14 h-14 md:w-16 md:h-16 mx-auto mb-4 md:mb-6 rounded-full bg-gradient-to-br from-accent-100/20 to-accent-200/10 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                  <Shield className="h-6 w-6 md:h-8 md:w-8 text-accent-300" />
                 </div>
-                <h3 className="text-xl font-bold text-text-100 mb-4">
+                <h3 className="text-lg md:text-xl font-bold text-text-100 mb-3 md:mb-4">
                   Seguridad Unificada
                 </h3>
-                <p className="text-text-200/80">
+                <p className="text-text-200/80 text-sm md:text-base">
                   Misma protección encriptada en todas las plataformas
                 </p>
               </div>
 
-              <div className="text-center p-8 rounded-2xl bg-gradient-to-br from-bg-200/30 to-bg-300/20 backdrop-blur-sm border border-primary-300/10 hover:border-primary-300/30 transition-all duration-300 group">
-                <div className="w-16 h-16 mx-auto mb-6 rounded-full bg-gradient-to-br from-primary-100/20 to-primary-300/10 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                  <Cloud className="h-8 w-8 text-primary-300" />
+              <div className="text-center p-6 md:p-8 rounded-2xl bg-gradient-to-br from-bg-200/30 to-bg-300/20 backdrop-blur-sm border border-primary-300/10 hover:border-primary-300/30 transition-all duration-300 group">
+                <div className="w-14 h-14 md:w-16 md:h-16 mx-auto mb-4 md:mb-6 rounded-full bg-gradient-to-br from-primary-100/20 to-primary-300/10 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                  <Cloud className="h-6 w-6 md:h-8 md:w-8 text-primary-300" />
                 </div>
-                <h3 className="text-xl font-bold text-text-100 mb-4">
+                <h3 className="text-lg md:text-xl font-bold text-text-100 mb-3 md:mb-4">
                   Backup en la Nube
                 </h3>
-                <p className="text-text-200/80">
+                <p className="text-text-200/80 text-sm md:text-base">
                   Tus datos seguros y accesibles desde cualquier lugar
                 </p>
               </div>
@@ -714,7 +1146,7 @@ const LandingPage: React.FC = () => {
         </section>
 
         {/* CTA Final */}
-        <section className="relative py-24 overflow-hidden">
+        <section className="relative py-16 md:py-24 overflow-hidden">
           <div className="absolute inset-0 bg-gradient-to-r from-primary-100/10 via-accent-100/10 to-primary-300/10" />
 
           {/* Partículas */}
@@ -735,85 +1167,94 @@ const LandingPage: React.FC = () => {
 
           <div className="relative container mx-auto px-6 text-center">
             <div className="max-w-3xl mx-auto">
-              <h2 className="text-4xl md:text-5xl font-bold mb-8 animate-fade-in-up">
+              <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-6 md:mb-8 animate-fade-in-up">
                 <span className="text-text-100">¿Listo para transformar </span>
                 <span className="bg-gradient-to-r from-primary-100 to-primary-300 bg-clip-text text-transparent">
                   tus finanzas?
                 </span>
               </h2>
 
-              <p className="text-xl text-text-200 mb-12 animate-fade-in-up animation-delay-200">
+              <p className="text-lg md:text-xl text-text-200 mb-8 md:mb-12 animate-fade-in-up animation-delay-200">
                 Únete al proyecto de tesis que está revolucionando la gestión
                 financiera personal con inteligencia artificial y machine
                 learning.
               </p>
 
-              <div className="flex flex-col sm:flex-row gap-6 justify-center animate-fade-in-up animation-delay-400">
+              <div className="flex flex-col sm:flex-row gap-4 md:gap-6 justify-center animate-fade-in-up animation-delay-400">
                 <Button
                   size="lg"
-                  className="px-12 py-8 text-xl font-bold bg-gradient-to-r from-primary-100 to-primary-200 hover:shadow-2xl hover:shadow-primary-100/40 transition-all duration-300 group relative overflow-hidden"
+                  className="px-8 md:px-12 py-6 md:py-8 text-lg md:text-xl font-bold bg-gradient-to-r from-primary-100 to-primary-200 hover:shadow-2xl hover:shadow-primary-100/40 transition-all duration-300 group relative overflow-hidden"
+                  onClick={handleNavigateToLogin}
                 >
                   <div className="absolute inset-0 bg-gradient-to-r from-primary-200 to-primary-300 translate-x-[-100%] group-hover:translate-x-0 transition-transform duration-500" />
                   <span className="relative z-10 flex items-center">
-                    <TrendingUp className="mr-3 h-6 w-6 group-hover:animate-bounce" />
-                    Comenzar Gratis Hoy
-                    <ArrowRight className="ml-3 h-6 w-6 opacity-0 group-hover:opacity-100 group-hover:translate-x-2 transition-all duration-300" />
+                    <TrendingUp className="mr-3 h-5 w-5 md:h-6 md:w-6 group-hover:animate-bounce" />
+                    <span className="hidden sm:inline">
+                      Comenzar Gratis Hoy
+                    </span>
+                    <span className="sm:hidden">Comenzar</span>
+                    <ArrowRight className="ml-3 h-5 w-5 md:h-6 md:w-6 opacity-0 group-hover:opacity-100 group-hover:translate-x-2 transition-all duration-300" />
                   </span>
                 </Button>
 
                 <Button
                   size="lg"
                   variant="outline"
-                  className="px-12 py-8 text-xl font-bold border-2 border-primary-300 text-primary-300 hover:bg-primary-300/10 hover:shadow-lg hover:shadow-primary-300/20 transition-all duration-300 group"
+                  className="px-8 md:px-12 py-6 md:py-8 text-lg md:text-xl font-bold border-2 border-primary-300 text-primary-300 hover:bg-primary-300/10 hover:shadow-lg hover:shadow-primary-300/20 transition-all duration-300 group"
+                  onClick={handleNavigateToGithub}
                 >
                   <span className="flex items-center">
-                    Ver Código en GitHub
-                    <Sparkles className="ml-3 h-6 w-6 opacity-0 group-hover:opacity-100 transition-all duration-300" />
+                    <Github className="mr-3 h-5 w-5 md:h-6 md:w-6" />
+                    <span className="hidden sm:inline">
+                      Ver Código en GitHub
+                    </span>
+                    <span className="sm:hidden">GitHub</span>
+                    <Sparkles className="ml-3 h-5 w-5 md:h-6 md:w-6 opacity-0 group-hover:opacity-100 transition-all duration-300" />
                   </span>
                 </Button>
               </div>
 
-              <p className="mt-8 text-text-200/70 text-sm animate-fade-in-up animation-delay-600">
-                Sin tarjeta de crédito • 14 días gratis • Soporte académico
-                incluido
+              <p className="mt-6 md:mt-8 text-text-200/70 text-xs md:text-sm animate-fade-in-up animation-delay-600">
+                Proyecto Investigativo • Ingeniería en Informática • Universidad
+                Privada Rafael Belloso Chacín
               </p>
             </div>
           </div>
         </section>
 
         {/* Footer */}
-        <footer className="border-t border-bg-300/30 pt-16 pb-8 backdrop-blur-sm">
+        <footer className="border-t border-bg-300/30 pt-12 md:pt-16 pb-6 md:pb-8 backdrop-blur-sm">
           <div className="container mx-auto px-6">
-            <div className="flex flex-col md:flex-row justify-between items-start gap-12">
+            <div className="flex flex-col md:flex-row justify-between items-start gap-8 md:gap-12">
               <div className="animate-fade-in-up">
                 <div className="flex items-center space-x-3 mb-4 group">
                   <div className="w-10 h-10 bg-gradient-to-br from-primary-100 to-primary-300 rounded-xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">
                     <Brain className="h-5 w-5" />
                   </div>
                   <div>
-                    <h3 className="text-xl font-bold text-text-100 group-hover:text-primary-300 transition-colors duration-300">
+                    <h3 className="text-lg md:text-xl font-bold text-text-100 group-hover:text-primary-300 transition-colors duration-300">
                       FinanzasIA
                     </h3>
-                    <p className="text-sm text-text-200/70 flex items-center">
+                    <p className="text-xs md:text-sm text-text-200/70 flex items-center">
                       <span className="w-2 h-2 bg-primary-300 rounded-full mr-2 animate-pulse" />
                       Proyecto de Tesis
                     </p>
                   </div>
                 </div>
-                <p className="text-text-200/60 max-w-md">
+                <p className="text-text-200/60 text-sm md:text-base max-w-md">
                   Aplicación web multidispositivo para la administración de
                   finanzas personales empleando inteligencia artificial.
                   Desarrollo académico 2026.
                 </p>
               </div>
 
-              <div className="grid grid-cols-2 gap-8 animate-fade-in-up animation-delay-200">
+              <div className="grid grid-cols-2 gap-6 md:gap-8 animate-fade-in-up animation-delay-200">
                 <div>
-                  <h4 className="font-semibold text-text-100 mb-4 flex items-center">
-                    <Users className="h-5 w-5 mr-2 text-primary-300" />
+                  <h4 className="font-semibold text-text-100 mb-3 md:mb-4 flex items-center">
+                    <Users className="h-4 w-4 md:h-5 md:w-5 mr-2 text-primary-300" />
                     Equipo
                   </h4>
-                  <ul className="space-y-2 text-text-200/70">
+                  <ul className="space-y-2 text-text-200/70 text-sm">
                     <li className="hover:text-primary-300 transition-colors duration-300">
                       Oberto - Frontend & ML
                     </li>
@@ -827,11 +1268,11 @@ const LandingPage: React.FC = () => {
                 </div>
 
                 <div>
-                  <h4 className="font-semibold text-text-100 mb-4 flex items-center">
-                    <Zap className="h-5 w-5 mr-2 text-primary-300" />
+                  <h4 className="font-semibold text-text-100 mb-3 md:mb-4 flex items-center">
+                    <Zap className="h-4 w-4 md:h-5 md:w-5 mr-2 text-primary-300" />
                     Tecnologías
                   </h4>
-                  <ul className="space-y-2 text-text-200/70">
+                  <ul className="space-y-2 text-text-200/70 text-sm">
                     <li className="hover:text-primary-300 transition-colors duration-300">
                       React + TypeScript
                     </li>
@@ -849,8 +1290,8 @@ const LandingPage: React.FC = () => {
               </div>
             </div>
 
-            <div className="mt-12 pt-8 border-t border-bg-300/30 text-center animate-fade-in-up animation-delay-400">
-              <p className="text-text-200/50 text-sm">
+            <div className="mt-8 md:mt-12 pt-6 md:pt-8 border-t border-bg-300/30 text-center animate-fade-in-up animation-delay-400">
+              <p className="text-text-200/50 text-xs md:text-sm">
                 © 2026 Finanzas Inteligentes con IA - Proyecto de Tesis
                 Universitaria. Todos los derechos académicos reservados.
               </p>
@@ -865,5 +1306,57 @@ const LandingPage: React.FC = () => {
     </div>
   );
 };
+
+// Componente DollarSign faltante
+const DollarSign: React.FC<{ className?: string }> = ({ className }) => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    className={className}
+  >
+    <line x1="12" y1="1" x2="12" y2="23"></line>
+    <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+  </svg>
+);
+
+// Componente ChevronRight faltante
+const ChevronRight: React.FC<{ className?: string }> = ({ className }) => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    className={className}
+  >
+    <polyline points="9 18 15 12 9 6"></polyline>
+  </svg>
+);
+
+// Componente BarChart3 faltante
+const BarChart3: React.FC<{ className?: string }> = ({ className }) => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    className={className}
+  >
+    <path d="M3 3v18h18"></path>
+    <path d="M18 17V9"></path>
+    <path d="M13 17V5"></path>
+    <path d="M8 17v-3"></path>
+  </svg>
+);
 
 export default LandingPage;

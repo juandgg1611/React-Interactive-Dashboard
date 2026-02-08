@@ -29,6 +29,7 @@ import {
   Zap,
   BarChart3,
   Users,
+  ArrowLeft,
 } from "lucide-react";
 
 import { Button } from "../ui/button";
@@ -382,8 +383,8 @@ const RegisterPage: React.FC = () => {
                             step === currentStep
                               ? "bg-primary-200 text-white scale-110 shadow-lg shadow-primary-200/30"
                               : step < currentStep
-                              ? "bg-primary-100/30 text-primary-200"
-                              : "bg-bg-300 text-text-200/50"
+                                ? "bg-primary-100/30 text-primary-200"
+                                : "bg-bg-300 text-text-200/50"
                           }`}
                         >
                           {step < currentStep ? (
@@ -411,8 +412,8 @@ const RegisterPage: React.FC = () => {
                             currentStep === 1
                               ? "bg-primary-100/20"
                               : currentStep > 1
-                              ? "bg-primary-100/10"
-                              : "bg-bg-300"
+                                ? "bg-primary-100/10"
+                                : "bg-bg-300"
                           }`}
                         >
                           <User className="h-4 w-4 text-primary-200" />
@@ -439,8 +440,8 @@ const RegisterPage: React.FC = () => {
                             currentStep === 2
                               ? "bg-primary-100/20"
                               : currentStep > 2
-                              ? "bg-primary-100/10"
-                              : "bg-bg-300"
+                                ? "bg-primary-100/10"
+                                : "bg-bg-300"
                           }`}
                         >
                           <Shield className="h-4 w-4 text-primary-200" />
@@ -673,8 +674,8 @@ const RegisterPage: React.FC = () => {
                               errors.fullName
                                 ? "border-red-500/50 focus-visible:ring-red-500/20"
                                 : watchedFullName && !errors.fullName
-                                ? "border-primary-200/40 focus-visible:ring-primary-200/20"
-                                : "border-bg-300/50 focus-visible:ring-primary-200/20"
+                                  ? "border-primary-200/40 focus-visible:ring-primary-200/20"
+                                  : "border-bg-300/50 focus-visible:ring-primary-200/20"
                             } text-text-100 placeholder:text-text-200/50`}
                             {...register("fullName")}
                           />
@@ -701,8 +702,8 @@ const RegisterPage: React.FC = () => {
                               errors.email
                                 ? "border-red-500/50 focus-visible:ring-red-500/20"
                                 : watchedEmail && !errors.email
-                                ? "border-primary-200/40 focus-visible:ring-primary-200/20"
-                                : "border-bg-300/50 focus-visible:ring-primary-200/20"
+                                  ? "border-primary-200/40 focus-visible:ring-primary-200/20"
+                                  : "border-bg-300/50 focus-visible:ring-primary-200/20"
                             } text-text-100 placeholder:text-text-200/50`}
                             {...register("email")}
                           />
@@ -807,20 +808,24 @@ const RegisterPage: React.FC = () => {
                       </div>
                     </div>
 
-                    <div className="flex justify-between pt-4">
-                      <Button
-                        variant="outline"
-                        className="border-bg-300/70 text-text-200 hover:text-primary-300 hover:border-primary-200/50"
+                    <div className="flex flex-col sm:flex-row gap-3 justify-between pt-4">
+                      <button
+                        type="button"
                         onClick={() => navigate("/login")}
+                        className="flex-1 min-w-[150px] py-2.5 px-3 bg-gradient-to-r from-primary-100/10 to-primary-200/5 hover:from-primary-100/20 hover:to-primary-200/10 border border-primary-100/20 hover:border-primary-200/40 text-primary-200 hover:text-primary-300 rounded-lg font-semibold transition-all duration-300 text-center group flex items-center justify-center gap-1.5 text-sm"
                       >
-                        ← Volver al Login
-                      </Button>
-                      <Button
+                        <ArrowLeft className="h-3.5 w-3.5 group-hover:-translate-x-0.5 transition-transform" />
+                        <span>Volver al Login</span>
+                      </button>
+
+                      <button
+                        type="button"
                         onClick={nextStep}
-                        className="bg-gradient-to-r from-primary-100 to-primary-200 hover:from-primary-200 hover:to-primary-300"
+                        className="flex-1 min-w-[150px] py-2.5 px-3 bg-gradient-to-r from-primary-100/10 to-primary-200/5 hover:from-primary-100/20 hover:to-primary-200/10 border border-primary-100/20 hover:border-primary-200/40 text-primary-200 hover:text-primary-300 rounded-lg font-semibold transition-all duration-300 text-center group flex items-center justify-center gap-1.5 text-sm"
                       >
-                        Continuar →
-                      </Button>
+                        <span>Continuar</span>
+                        <ArrowRight className="h-3.5 w-3.5 group-hover:translate-x-0.5 transition-transform" />
+                      </button>
                     </div>
                   </div>
                 )}
@@ -856,8 +861,8 @@ const RegisterPage: React.FC = () => {
                               errors.password
                                 ? "border-red-500/50 focus-visible:ring-red-500/20"
                                 : watchedPassword && !errors.password
-                                ? "border-primary-200/40 focus-visible:ring-primary-200/20"
-                                : "border-bg-300/50 focus-visible:ring-primary-200/20"
+                                  ? "border-primary-200/40 focus-visible:ring-primary-200/20"
+                                  : "border-bg-300/50 focus-visible:ring-primary-200/20"
                             } text-text-100`}
                             {...register("password")}
                           />
@@ -889,10 +894,10 @@ const RegisterPage: React.FC = () => {
                                     ? passwordScore >= 80
                                       ? "bg-primary-200"
                                       : passwordScore >= 60
-                                      ? "bg-accent-100"
-                                      : passwordScore >= 40
-                                      ? "bg-yellow-500"
-                                      : "bg-red-500"
+                                        ? "bg-accent-100"
+                                        : passwordScore >= 40
+                                          ? "bg-yellow-500"
+                                          : "bg-red-500"
                                     : "bg-bg-300"
                                 }`}
                               />
@@ -944,9 +949,9 @@ const RegisterPage: React.FC = () => {
                               watch("confirmPassword") !== watchedPassword
                                 ? "border-red-500/50 focus-visible:ring-red-500/20"
                                 : watch("confirmPassword") &&
-                                  watch("confirmPassword") === watchedPassword
-                                ? "border-primary-200/40 focus-visible:ring-primary-200/20"
-                                : "border-bg-300/50 focus-visible:ring-primary-200/20"
+                                    watch("confirmPassword") === watchedPassword
+                                  ? "border-primary-200/40 focus-visible:ring-primary-200/20"
+                                  : "border-bg-300/50 focus-visible:ring-primary-200/20"
                             } text-text-100`}
                             {...register("confirmPassword")}
                           />
@@ -1101,20 +1106,6 @@ const RegisterPage: React.FC = () => {
                   </form>
                 )}
               </CardContent>
-
-              <CardFooter className="pt-6 border-t border-bg-300/50">
-                <div className="text-center w-full">
-                  <p className="text-text-200 text-sm">
-                    ¿Ya tienes una cuenta?{" "}
-                    <Link
-                      to="/login"
-                      className="text-primary-200 hover:text-primary-300 font-semibold transition-colors"
-                    >
-                      Inicia sesión aquí
-                    </Link>
-                  </p>
-                </div>
-              </CardFooter>
             </Card>
 
             {/* Footer académico */}

@@ -1,6 +1,8 @@
 // src/components/calculator/CalculatorButtons.tsx
 import React, { useState, useEffect, useCallback } from "react";
 import ButtonGrid from "./ButtonGrid";
+import ScientificCalculator from "./ScientificCalculator";
+import FinancialCalculator from "./FinancialCalculator";
 import { cn } from "../../lib/utils";
 import {
   Settings,
@@ -49,11 +51,20 @@ interface CalculatorButtonsProps {
   isErrorState?: boolean;
   currentResult?: string;
 
+  // Nuevos props necesarios para las vistas específicas
+  displayValue: string;
+  history: string;
+  onButtonClick: (value: string) => void;
+  onBackspace: () => void;
+
   // Configuraciones iniciales
   initialLayout?: "basic" | "scientific" | "financial";
   initialButtonSize?: "compact" | "normal" | "large";
   initialShowLabels?: boolean;
   initialAnimateButtons?: boolean;
+
+  // Nueva prop para controlar si se muestra display interno
+  hideInternalDisplay?: boolean;
 }
 
 const CalculatorButtons: React.FC<CalculatorButtonsProps> = ({
@@ -77,18 +88,27 @@ const CalculatorButtons: React.FC<CalculatorButtonsProps> = ({
   isErrorState = false,
   currentResult = "",
 
+  // Nuevos props
+  displayValue,
+  history,
+  onButtonClick,
+  onBackspace,
+
   // Configuraciones iniciales
   initialLayout = "basic",
   initialButtonSize = "normal",
   initialShowLabels = false,
   initialAnimateButtons = true,
+
+  // Nueva prop
+  hideInternalDisplay = false,
 }) => {
   // Estados de configuración
   const [layout, setLayout] = useState<"basic" | "scientific" | "financial">(
-    initialLayout
+    initialLayout,
   );
   const [buttonSize, setButtonSize] = useState<"compact" | "normal" | "large">(
-    initialButtonSize
+    initialButtonSize,
   );
   const [showLabels, setShowLabels] = useState(initialShowLabels);
   const [animateButtons, setAnimateButtons] = useState(initialAnimateButtons);
@@ -122,6 +142,44 @@ const CalculatorButtons: React.FC<CalculatorButtonsProps> = ({
     }
   }, [isTransitioning]);
 
+  // Handler combinado para los botones (para las nuevas vistas)
+  const handleCombinedClick = useCallback(
+    (value: string) => {
+      // Determinar qué tipo de click es y llamar al handler correcto
+      if (["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"].includes(value)) {
+        onNumberClick(value);
+      } else if (["+", "-", "*", "/"].includes(value)) {
+        onOperationClick(value);
+      } else if (value === "=") {
+        onEqualsClick();
+      } else if (value === "C" || value === "CE") {
+        onClearClick();
+      } else if (value === "⌫") {
+        onBackspaceClick();
+      } else if (["M+", "M-", "MR", "MC"].includes(value)) {
+        onMemoryClick(value);
+      } else if (value === ".") {
+        onDecimalClick();
+      } else if (value === "%") {
+        onPercentageClick();
+      } else {
+        // Para funciones científicas y otras
+        onButtonClick(value);
+      }
+    },
+    [
+      onNumberClick,
+      onOperationClick,
+      onEqualsClick,
+      onClearClick,
+      onBackspaceClick,
+      onMemoryClick,
+      onDecimalClick,
+      onPercentageClick,
+      onButtonClick,
+    ],
+  );
+
   // Handlers para operaciones con efectos adicionales
   const handleNumberClick = useCallback(
     (num: string) => {
@@ -133,7 +191,7 @@ const CalculatorButtons: React.FC<CalculatorButtonsProps> = ({
       }
       onNumberClick(num);
     },
-    [onNumberClick, soundEnabled, vibrationEnabled]
+    [onNumberClick, soundEnabled, vibrationEnabled],
   );
 
   const handleOperationClick = useCallback(
@@ -150,7 +208,7 @@ const CalculatorButtons: React.FC<CalculatorButtonsProps> = ({
 
       onOperationClick(operation);
     },
-    [onOperationClick, soundEnabled, vibrationEnabled]
+    [onOperationClick, soundEnabled, vibrationEnabled],
   );
 
   const handleEqualsClick = useCallback(() => {
@@ -185,7 +243,7 @@ const CalculatorButtons: React.FC<CalculatorButtonsProps> = ({
 
       onScientificFunctionClick(func);
     },
-    [onScientificFunctionClick, soundEnabled, vibrationEnabled, layout]
+    [onScientificFunctionClick, soundEnabled, vibrationEnabled, layout],
   );
 
   // Funciones de sonido
@@ -208,7 +266,7 @@ const CalculatorButtons: React.FC<CalculatorButtonsProps> = ({
 
   // Handlers para configuración
   const handleLayoutChange = (
-    newLayout: "basic" | "scientific" | "financial"
+    newLayout: "basic" | "scientific" | "financial",
   ) => {
     setIsTransitioning(true);
     setLayout(newLayout);
@@ -279,6 +337,82 @@ const CalculatorButtons: React.FC<CalculatorButtonsProps> = ({
     }
   };
 
+  // Renderizar la vista según el layout
+  const renderCalculatorView = () => {
+    const commonProps = {
+      displayValue,
+      history,
+      onButtonClick: handleCombinedClick,
+      onClear: onClearClick,
+      onEquals: onEqualsClick,
+      onBackspace: onBackspace,
+      isError: isErrorState,
+    };
+
+    switch (layout) {
+      case "scientific":
+        return (
+          <ScientificCalculator
+            {...commonProps}
+            hideDisplay={hideInternalDisplay}
+          />
+        );
+
+      case "financial":
+        return (
+          <FinancialCalculator
+            {...commonProps}
+            hideDisplay={hideInternalDisplay}
+          />
+        );
+
+      case "basic":
+      default:
+        return (
+          <div
+            className={cn(
+              "transition-all duration-300 ease-out",
+              isTransitioning && "opacity-80",
+            )}
+            style={{
+              transform: `scale(${gridScale})`,
+              opacity: `${buttonOpacity}%`,
+            }}
+          >
+            <ButtonGrid
+              // Handlers
+              onNumberClick={handleNumberClick}
+              onOperationClick={handleOperationClick}
+              onFunctionClick={onFunctionClick}
+              onEqualsClick={handleEqualsClick}
+              onClearClick={onClearClick}
+              onClearEntryClick={onClearEntryClick}
+              onBackspaceClick={onBackspaceClick}
+              onMemoryClick={onMemoryClick}
+              onDecimalClick={onDecimalClick}
+              onToggleSignClick={onToggleSignClick}
+              onPercentageClick={onPercentageClick}
+              onScientificFunctionClick={handleScientificFunctionClick}
+              // Estados
+              currentOperation={highlightedOperation || currentOperation}
+              memoryValue={memoryValue}
+              isErrorState={isErrorState}
+              currentResult={currentResult}
+              // Configuraciones
+              layout={layout}
+              buttonSize={buttonSize}
+              showLabels={showLabels}
+              animateButtons={animateButtons}
+              // Props para ocultar display
+              displayValue={displayValue}
+              history={history}
+              hideDisplay={hideInternalDisplay}
+            />
+          </div>
+        );
+    }
+  };
+
   return (
     <div className="space-y-6">
       {/* Panel de configuración */}
@@ -291,24 +425,24 @@ const CalculatorButtons: React.FC<CalculatorButtonsProps> = ({
                 className={cn(
                   "p-2 rounded-lg",
                   layout === "scientific"
-                    ? "bg-purple-500/20 text-purple-400"
+                    ? "bg-accent-100/20 text-accent-100"
                     : layout === "financial"
-                    ? "bg-blue-500/20 text-blue-400"
-                    : "bg-primary-200/20 text-primary-200"
+                      ? "bg-primary-200/20 text-primary-200"
+                      : "bg-primary-200/20 text-primary-200",
                 )}
               >
                 {getLayoutIcon()}
               </div>
               <div>
                 <div className="text-sm font-medium text-text-100">
-                  Modo {getLayoutName()}
+                  Calculadora {getLayoutName()}
                 </div>
                 <div className="text-xs text-text-200/70">
                   {layout === "scientific"
-                    ? "Funciones avanzadas"
+                    ? "Funciones trigonométricas, logaritmos, potencias"
                     : layout === "financial"
-                    ? "Cálculos financieros"
-                    : "Operaciones básicas"}
+                      ? "Préstamos, inversiones, conversión de divisas"
+                      : "Operaciones aritméticas básicas"}
                 </div>
               </div>
             </div>
@@ -344,247 +478,223 @@ const CalculatorButtons: React.FC<CalculatorButtonsProps> = ({
                   className="border-bg-300/50 text-text-200 hover:text-primary-200 hover:border-primary-200/30"
                 >
                   <Grid className="h-4 w-4 mr-2" />
-                  Layout
+                  Modo
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent
                 align="end"
                 className="w-48 bg-bg-200 border-bg-300/40"
               >
-                <DropdownMenuLabel>Seleccionar Layout</DropdownMenuLabel>
+                <DropdownMenuLabel>Seleccionar Modo</DropdownMenuLabel>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem
                   onClick={() => handleLayoutChange("basic")}
                   className={cn(
                     "cursor-pointer",
-                    layout === "basic" && "bg-primary-200/10 text-primary-200"
+                    layout === "basic" && "bg-primary-200/10 text-primary-200",
                   )}
                 >
                   <Grid3x3 className="h-4 w-4 mr-2" />
                   Básica
-                  <span className="ml-auto text-xs text-text-200/60">4×4</span>
+                  <span className="ml-auto text-xs text-text-200/60">
+                    Simple
+                  </span>
                 </DropdownMenuItem>
                 <DropdownMenuItem
                   onClick={() => handleLayoutChange("scientific")}
                   className={cn(
                     "cursor-pointer",
                     layout === "scientific" &&
-                      "bg-purple-500/10 text-purple-400"
+                      "bg-accent-100/10 text-accent-100",
                   )}
                 >
                   <Brain className="h-4 w-4 mr-2" />
                   Científica
-                  <span className="ml-auto text-xs text-text-200/60">5×5</span>
+                  <span className="ml-auto text-xs text-text-200/60">
+                    Avanzado
+                  </span>
                 </DropdownMenuItem>
                 <DropdownMenuItem
                   onClick={() => handleLayoutChange("financial")}
                   className={cn(
                     "cursor-pointer",
-                    layout === "financial" && "bg-blue-500/10 text-blue-400"
+                    layout === "financial" &&
+                      "bg-primary-200/10 text-primary-200",
                   )}
                 >
                   <Calculator className="h-4 w-4 mr-2" />
                   Financiera
-                  <span className="ml-auto text-xs text-text-200/60">4×4</span>
+                  <span className="ml-auto text-xs text-text-200/60">
+                    Profesional
+                  </span>
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
 
-            {/* Botón de configuración */}
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className="border-bg-300/50 text-text-200 hover:text-primary-200 hover:border-primary-200/30"
+            {/* Botón de configuración (solo para modo básico) */}
+            {layout === "basic" && (
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="border-bg-300/50 text-text-200 hover:text-primary-200 hover:border-primary-200/30"
+                  >
+                    <Settings className="h-4 w-4" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent
+                  align="end"
+                  className="w-56 bg-bg-200 border-bg-300/40"
                 >
-                  <Settings className="h-4 w-4" />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent
-                align="end"
-                className="w-56 bg-bg-200 border-bg-300/40"
-              >
-                <DropdownMenuLabel>Configuración</DropdownMenuLabel>
-                <DropdownMenuSeparator />
+                  <DropdownMenuLabel>Configuración</DropdownMenuLabel>
+                  <DropdownMenuSeparator />
 
-                {/* Tamaño de botones */}
-                <div className="px-2 py-1.5">
-                  <div className="flex items-center justify-between mb-2">
-                    <span className="text-sm text-text-200">
-                      Tamaño de botones
-                    </span>
-                    <span className="text-xs text-text-200/60">
-                      {buttonSize}
-                    </span>
-                  </div>
-                  <div className="flex gap-1">
-                    {(["compact", "normal", "large"] as const).map((size) => (
-                      <Button
-                        key={size}
-                        size="sm"
-                        variant={buttonSize === size ? "default" : "outline"}
-                        onClick={() => handleButtonSizeChange(size)}
-                        className={cn(
-                          "flex-1",
-                          buttonSize === size
-                            ? "bg-primary-200/20 border-primary-200/30 text-primary-200"
-                            : "border-bg-300/50 text-text-200"
-                        )}
-                      >
-                        {size === "compact"
-                          ? "S"
-                          : size === "normal"
-                          ? "M"
-                          : "L"}
-                      </Button>
-                    ))}
-                  </div>
-                </div>
-
-                <DropdownMenuSeparator />
-
-                {/* Opciones de visualización */}
-                <div className="space-y-2 px-2 py-1.5">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      <Type className="h-4 w-4 text-text-200/70" />
+                  {/* Tamaño de botones */}
+                  <div className="px-2 py-1.5">
+                    <div className="flex items-center justify-between mb-2">
                       <span className="text-sm text-text-200">
-                        Mostrar labels
+                        Tamaño de botones
+                      </span>
+                      <span className="text-xs text-text-200/60">
+                        {buttonSize}
                       </span>
                     </div>
-                    <Switch
-                      checked={showLabels}
-                      onCheckedChange={setShowLabels}
-                      className="data-[state=checked]:bg-primary-200"
-                    />
-                  </div>
-
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      <Zap className="h-4 w-4 text-text-200/70" />
-                      <span className="text-sm text-text-200">Animaciones</span>
+                    <div className="flex gap-1">
+                      {(["compact", "normal", "large"] as const).map((size) => (
+                        <Button
+                          key={size}
+                          size="sm"
+                          variant={buttonSize === size ? "default" : "outline"}
+                          onClick={() => handleButtonSizeChange(size)}
+                          className={cn(
+                            "flex-1",
+                            buttonSize === size
+                              ? "bg-primary-200/20 border-primary-200/30 text-primary-200"
+                              : "border-bg-300/50 text-text-200",
+                          )}
+                        >
+                          {size === "compact"
+                            ? "S"
+                            : size === "normal"
+                              ? "M"
+                              : "L"}
+                        </Button>
+                      ))}
                     </div>
-                    <Switch
-                      checked={animateButtons}
-                      onCheckedChange={setAnimateButtons}
-                      className="data-[state=checked]:bg-primary-200"
+                  </div>
+
+                  <DropdownMenuSeparator />
+
+                  {/* Opciones de visualización */}
+                  <div className="space-y-2 px-2 py-1.5">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <Type className="h-4 w-4 text-text-200/70" />
+                        <span className="text-sm text-text-200">
+                          Mostrar labels
+                        </span>
+                      </div>
+                      <Switch
+                        checked={showLabels}
+                        onCheckedChange={setShowLabels}
+                        className="data-[state=checked]:bg-primary-200"
+                      />
+                    </div>
+
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <Zap className="h-4 w-4 text-text-200/70" />
+                        <span className="text-sm text-text-200">
+                          Animaciones
+                        </span>
+                      </div>
+                      <Switch
+                        checked={animateButtons}
+                        onCheckedChange={setAnimateButtons}
+                        className="data-[state=checked]:bg-primary-200"
+                      />
+                    </div>
+
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        {theme === "dark" ? (
+                          <Moon className="h-4 w-4 text-text-200/70" />
+                        ) : (
+                          <Sun className="h-4 w-4 text-text-200/70" />
+                        )}
+                        <span className="text-sm text-text-200">Sonidos</span>
+                      </div>
+                      <Switch
+                        checked={soundEnabled}
+                        onCheckedChange={setSoundEnabled}
+                        className="data-[state=checked]:bg-primary-200"
+                      />
+                    </div>
+                  </div>
+
+                  <DropdownMenuSeparator />
+
+                  {/* Opacidad */}
+                  <div className="px-2 py-1.5">
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="text-sm text-text-200">Opacidad</span>
+                      <span className="text-xs text-text-200/60">
+                        {buttonOpacity}%
+                      </span>
+                    </div>
+                    <Slider
+                      value={[buttonOpacity]}
+                      onValueChange={([value]) => setButtonOpacity(value)}
+                      max={100}
+                      min={60}
+                      step={5}
+                      className="w-full"
                     />
                   </div>
 
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      {theme === "dark" ? (
-                        <Moon className="h-4 w-4 text-text-200/70" />
+                  <DropdownMenuSeparator />
+
+                  {/* Acciones */}
+                  <div className="space-y-1 px-2 py-1.5">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="w-full justify-start border-bg-300/50 text-text-200 hover:text-primary-200"
+                      onClick={handleFullscreenToggle}
+                    >
+                      {isFullscreen ? (
+                        <>
+                          <Minimize2 className="h-4 w-4 mr-2" />
+                          Salir de pantalla completa
+                        </>
                       ) : (
-                        <Sun className="h-4 w-4 text-text-200/70" />
+                        <>
+                          <Maximize2 className="h-4 w-4 mr-2" />
+                          Pantalla completa
+                        </>
                       )}
-                      <span className="text-sm text-text-200">Sonidos</span>
-                    </div>
-                    <Switch
-                      checked={soundEnabled}
-                      onCheckedChange={setSoundEnabled}
-                      className="data-[state=checked]:bg-primary-200"
-                    />
+                    </Button>
+
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="w-full justify-start border-bg-300/50 text-text-200 hover:text-red-400 hover:border-red-400/30"
+                      onClick={handleResetSettings}
+                    >
+                      <RotateCcw className="h-4 w-4 mr-2" />
+                      Restablecer configuración
+                    </Button>
                   </div>
-                </div>
-
-                <DropdownMenuSeparator />
-
-                {/* Opacidad */}
-                <div className="px-2 py-1.5">
-                  <div className="flex items-center justify-between mb-2">
-                    <span className="text-sm text-text-200">Opacidad</span>
-                    <span className="text-xs text-text-200/60">
-                      {buttonOpacity}%
-                    </span>
-                  </div>
-                  <Slider
-                    value={[buttonOpacity]}
-                    onValueChange={([value]) => setButtonOpacity(value)}
-                    max={100}
-                    min={60}
-                    step={5}
-                    className="w-full"
-                  />
-                </div>
-
-                <DropdownMenuSeparator />
-
-                {/* Acciones */}
-                <div className="space-y-1 px-2 py-1.5">
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    className="w-full justify-start border-bg-300/50 text-text-200 hover:text-primary-200"
-                    onClick={handleFullscreenToggle}
-                  >
-                    {isFullscreen ? (
-                      <>
-                        <Minimize2 className="h-4 w-4 mr-2" />
-                        Salir de pantalla completa
-                      </>
-                    ) : (
-                      <>
-                        <Maximize2 className="h-4 w-4 mr-2" />
-                        Pantalla completa
-                      </>
-                    )}
-                  </Button>
-
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    className="w-full justify-start border-bg-300/50 text-text-200 hover:text-red-400 hover:border-red-400/30"
-                    onClick={handleResetSettings}
-                  >
-                    <RotateCcw className="h-4 w-4 mr-2" />
-                    Restablecer configuración
-                  </Button>
-                </div>
-              </DropdownMenuContent>
-            </DropdownMenu>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            )}
           </div>
         </div>
       </div>
 
-      {/* Grid principal con animación */}
-      <div
-        className={cn(
-          "transition-all duration-300 ease-out",
-          isTransitioning && "opacity-80"
-        )}
-        style={{
-          transform: `scale(${gridScale})`,
-          opacity: `${buttonOpacity}%`,
-        }}
-      >
-        <ButtonGrid
-          // Handlers
-          onNumberClick={handleNumberClick}
-          onOperationClick={handleOperationClick}
-          onFunctionClick={onFunctionClick}
-          onEqualsClick={handleEqualsClick}
-          onClearClick={onClearClick}
-          onClearEntryClick={onClearEntryClick}
-          onBackspaceClick={onBackspaceClick}
-          onMemoryClick={onMemoryClick}
-          onDecimalClick={onDecimalClick}
-          onToggleSignClick={onToggleSignClick}
-          onPercentageClick={onPercentageClick}
-          onScientificFunctionClick={handleScientificFunctionClick}
-          // Estados
-          currentOperation={highlightedOperation || currentOperation}
-          memoryValue={memoryValue}
-          isErrorState={isErrorState}
-          currentResult={currentResult}
-          // Configuraciones
-          layout={layout}
-          buttonSize={buttonSize}
-          showLabels={showLabels}
-          animateButtons={animateButtons}
-        />
-      </div>
+      {/* Renderizar la vista según el layout */}
+      {renderCalculatorView()}
 
       {/* Información de ayuda */}
       <div className="bg-gradient-to-br from-bg-200/20 to-bg-300/10 backdrop-blur-sm rounded-xl border border-bg-300/30 p-3">
@@ -597,9 +707,9 @@ const CalculatorButtons: React.FC<CalculatorButtonsProps> = ({
           </div>
 
           <div className="space-y-1">
-            <div className="text-text-200/70">Memoria</div>
+            <div className="text-text-200/70">Cambiar modo</div>
             <div className="text-text-100 font-medium">
-              Ctrl+M: Añadir a memoria
+              Ctrl+B: Básica, Ctrl+S: Científica, Ctrl+F: Financiera
             </div>
           </div>
 
@@ -609,13 +719,13 @@ const CalculatorButtons: React.FC<CalculatorButtonsProps> = ({
           </div>
 
           <div className="space-y-1">
-            <div className="text-text-200/70">Estadísticas</div>
+            <div className="text-text-200/70">Funciones</div>
             <div className="text-text-100 font-medium">
               {layout === "scientific"
-                ? "25 botones"
+                ? "25+ funciones"
                 : layout === "financial"
-                ? "20 botones"
-                : "16 botones"}
+                  ? "Herramientas financieras"
+                  : "Operaciones básicas"}
             </div>
           </div>
         </div>

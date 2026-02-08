@@ -5,13 +5,13 @@ import { cn } from "../../lib/utils";
 interface CalculatorDisplayProps {
   value: string;
   history: string;
-  isError: boolean;
+  isError?: boolean;
 }
 
 const CalculatorDisplay: React.FC<CalculatorDisplayProps> = ({
   value,
   history,
-  isError,
+  isError = false,
 }) => {
   const [isAnimating, setIsAnimating] = useState(false);
   const prevValueRef = useRef(value);
@@ -62,7 +62,7 @@ const CalculatorDisplay: React.FC<CalculatorDisplayProps> = ({
           isError
             ? "border-red-500/40 bg-gradient-to-br from-red-500/10 to-red-400/5 shadow-lg shadow-red-500/10"
             : "border-primary-200/40 bg-gradient-to-br from-primary-100/5 via-primary-200/3 to-primary-300/2 shadow-lg shadow-primary-100/10",
-          isAnimating && !isError && "ring-2 ring-primary-200/50"
+          isAnimating && !isError && "ring-2 ring-primary-200/50",
         )}
       >
         {/* Efecto de gradiente animado en hover */}
@@ -87,7 +87,7 @@ const CalculatorDisplay: React.FC<CalculatorDisplayProps> = ({
               "text-4xl sm:text-5xl lg:text-6xl font-bold text-right font-mono transition-all duration-300",
               isError ? "text-red-400" : "text-text-100",
               isAnimating && !isError && "scale-105",
-              displayValue.length > 10 && "text-3xl sm:text-4xl lg:text-5xl"
+              displayValue.length > 10 && "text-3xl sm:text-4xl lg:text-5xl",
             )}
           >
             {displayValue}

@@ -1,4 +1,4 @@
-// src/components/layout/Layout.tsx 
+// src/components/layout/Layout.tsx
 import React from "react";
 import Sidebar from "./Sidebar";
 import { cn } from "../../lib/utils";
@@ -12,8 +12,16 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
     <div className="min-h-screen bg-gradient-to-br from-neutral-950 via-neutral-900 to-neutral-800">
       <Sidebar />
 
-      {/* Contenido principal con padding para la sidebar */}
-      <main className="pl-64 transition-all duration-300 min-h-screen">
+      {/* Contenido principal - RESPONSIVE */}
+      <main
+        className={cn(
+          "transition-all duration-300 min-h-screen",
+          // En desktop: padding para el sidebar
+          "lg:pl-64", // Solo en pantallas grandes
+          // En móvil: sin padding
+          "pl-0", // Default en móvil
+        )}
+      >
         {/* Fondo animado */}
         <div className="absolute inset-0">
           <div className="absolute top-0 left-1/4 w-[40rem] h-[40rem] bg-primary-300/5 rounded-full blur-3xl animate-pulse-glow" />
@@ -35,7 +43,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
         </div>
 
         {/* Contenido */}
-        <div className="relative z-10">{children}</div>
+        <div className="relative z-10 p-4 lg:p-6">{children}</div>
       </main>
     </div>
   );

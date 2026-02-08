@@ -18,6 +18,7 @@ import {
   AlertCircle,
   Loader2,
   Sparkles,
+  ChevronRight,
   Brain,
   Key,
   User,
@@ -240,7 +241,7 @@ const LoginPage: React.FC = () => {
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
             <div className="flex items-center gap-3">
               <div className="relative">
-                <div className="w-10 h-10 bg-gradient-to-br from-primary-100 to-primary-300 rounded-xl flex items-center justify-center shadow-lg shadow-primary-100/20">
+                <div className="w-10 h-10 bg-gradient-to-br from-primary-100 to-primary-200 rounded-xl flex items-center justify-center shadow-lg shadow-primary-100/20">
                   <Brain className="h-5 w-5 text-white" />
                 </div>
                 <div className="absolute -top-1 -right-1 w-3 h-3 bg-primary-300 rounded-full animate-ping" />
@@ -249,7 +250,7 @@ const LoginPage: React.FC = () => {
                 <h1 className="text-xl font-bold text-text-100">
                   Finanzas<span className="text-primary-200">IA</span>
                 </h1>
-                <p className="text-xs text-text-200/70">Tesis Universitaria</p>
+                <p className="text-xs text-text-200/70">Inicio de sesión</p>
               </div>
             </div>
 
@@ -361,13 +362,13 @@ const LoginPage: React.FC = () => {
                             (securityLevel === "high"
                               ? 3
                               : securityLevel === "medium"
-                              ? 2
-                              : 1)
+                                ? 2
+                                : 1)
                               ? securityLevel === "high"
                                 ? "bg-green-500"
                                 : securityLevel === "medium"
-                                ? "bg-yellow-500"
-                                : "bg-red-500"
+                                  ? "bg-yellow-500"
+                                  : "bg-red-500"
                               : "bg-gray-800/50"
                           }`}
                         />
@@ -381,8 +382,8 @@ const LoginPage: React.FC = () => {
                             securityLevel === "high"
                               ? "100%"
                               : securityLevel === "medium"
-                              ? "66%"
-                              : "33%",
+                                ? "66%"
+                                : "33%",
                         }}
                       />
                     </div>
@@ -402,8 +403,8 @@ const LoginPage: React.FC = () => {
                         securityLevel === "high"
                           ? "100%"
                           : securityLevel === "medium"
-                          ? "66%"
-                          : "33%",
+                            ? "66%"
+                            : "33%",
                     }}
                   />
                 </div>
@@ -465,7 +466,7 @@ const LoginPage: React.FC = () => {
                   <CardTitle className="text-2xl text-text-100">
                     <div className="flex items-center gap-2">
                       <Key className="h-5 w-5 text-primary-200" />
-                      Acceso Investigador
+                      Inicio de Sesión
                     </div>
                   </CardTitle>
                   <div className="relative">
@@ -473,7 +474,7 @@ const LoginPage: React.FC = () => {
                   </div>
                 </div>
                 <CardDescription className="text-text-200">
-                  Credenciales institucionales requeridas
+                  Credenciales requeridas
                 </CardDescription>
               </CardHeader>
 
@@ -498,8 +499,8 @@ const LoginPage: React.FC = () => {
                           errors.email
                             ? "border-red-500/50 focus-visible:ring-red-500/30"
                             : emailValue && !errors.email
-                            ? "border-primary-200/50 focus-visible:ring-primary-200/30"
-                            : "border-bg-300/50 focus-visible:ring-primary-200/20"
+                              ? "border-primary-200/50 focus-visible:ring-primary-200/30"
+                              : "border-bg-300/50 focus-visible:ring-primary-200/20"
                         } text-text-100 placeholder:text-text-200/50`}
                         disabled={isLoading}
                         {...register("email")}
@@ -563,8 +564,8 @@ const LoginPage: React.FC = () => {
                           errors.password
                             ? "border-red-500/50 focus-visible:ring-red-500/30"
                             : securityLevel === "high"
-                            ? "border-primary-200/50 focus-visible:ring-primary-200/30"
-                            : "border-bg-300/50 focus-visible:ring-primary-200/20"
+                              ? "border-primary-200/50 focus-visible:ring-primary-200/30"
+                              : "border-bg-300/50 focus-visible:ring-primary-200/20"
                         } text-text-100`}
                         disabled={isLoading}
                         {...register("password")}
@@ -704,16 +705,54 @@ const LoginPage: React.FC = () => {
 
                   <Separator className="bg-bg-300/50" />
 
-                  <div className="text-center">
-                    <p className="text-text-200 text-sm">
-                      ¿Requieres acceso al sistema?{" "}
-                      <Link
-                        to="/register"
-                        className="text-primary-200 hover:text-primary-300 font-semibold transition-colors"
-                      >
-                        Solicitar credenciales de investigación
-                      </Link>
-                    </p>
+                  {/* Enlaces uno al lado del otro - Más grandes */}
+                  <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+                    <Link
+                      to="/register"
+                      className="flex-1 min-w-[180px] py-3 px-4 bg-gradient-to-r from-primary-100/10 to-primary-200/5 hover:from-primary-100/20 hover:to-primary-200/10 border border-primary-100/20 hover:border-primary-200/40 text-primary-200 hover:text-primary-300 rounded-xl font-semibold transition-all duration-300 text-center group flex items-center justify-center gap-2"
+                    >
+                      <User className="h-4 w-4 group-hover:scale-110 transition-transform" />
+                      <span className="text-sm">Registro</span>
+                    </Link>
+
+                    <div className="text-text-200/50 text-sm hidden sm:block">
+                      |
+                    </div>
+
+                    <Link
+                      to="/recover-password"
+                      className="flex-1 min-w-[180px] py-3 px-4 bg-gradient-to-r from-primary-100/10 to-primary-200/5 hover:from-primary-100/20 hover:to-primary-200/10 border border-primary-100/20 hover:border-primary-200/40 text-primary-200 hover:text-primary-300 rounded-xl font-semibold transition-all duration-300 text-center group flex items-center justify-center gap-2"
+                    >
+                      <Key className="h-4 w-4 group-hover:scale-110 transition-transform" />
+                      <span className="text-sm">Recuperar Acceso</span>
+                    </Link>
+                  </div>
+
+                  {/* Versión vertical para móviles */}
+                  <div className="sm:hidden flex flex-col gap-3">
+                    <div className="text-center">
+                      <p className="text-text-200 text-sm">
+                        ¿Primera vez?{" "}
+                        <Link
+                          to="/register"
+                          className="text-primary-200 hover:text-primary-300 font-semibold transition-colors"
+                        >
+                          Regístrate Aquí
+                        </Link>
+                      </p>
+                    </div>
+
+                    <div className="text-center">
+                      <p className="text-text-200 text-sm">
+                        ¿Problemas de acceso?{" "}
+                        <Link
+                          to="/recover-password"
+                          className="text-primary-200 hover:text-primary-300 font-semibold transition-colors"
+                        >
+                          Recuperar Contraseña
+                        </Link>
+                      </p>
+                    </div>
                   </div>
                 </CardFooter>
               </form>

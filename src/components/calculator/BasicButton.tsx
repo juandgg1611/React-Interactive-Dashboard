@@ -5,10 +5,18 @@ import { cn } from "../../lib/utils";
 interface BasicButtonProps {
   label: string | React.ReactNode;
   onClick: () => void;
-  variant?: "number" | "operation" | "function" | "clear" | "equals";
+  variant?:
+    | "number"
+    | "operation"
+    | "function"
+    | "clear"
+    | "equals"
+    | "memory"
+    | "scientific";
   size?: "normal" | "wide";
   disabled?: boolean;
   className?: string;
+  tooltip?: string;
   onMouseEnter?: () => void;
   onMouseLeave?: () => void;
 }
@@ -31,7 +39,7 @@ const BasicButton: React.FC<BasicButtonProps> = ({
   const handleInteractionStart = (
     clientX: number,
     clientY: number,
-    element: HTMLElement
+    element: HTMLElement,
   ) => {
     if (disabled) return;
 
@@ -53,8 +61,9 @@ const BasicButton: React.FC<BasicButtonProps> = ({
 
   const playClickSound = () => {
     try {
-      const audioContext = new (window.AudioContext ||
-        (window as any).webkitAudioContext)();
+      const audioContext = new (
+        window.AudioContext || (window as any).webkitAudioContext
+      )();
       const oscillator = audioContext.createOscillator();
       const gainNode = audioContext.createGain();
 
@@ -72,7 +81,7 @@ const BasicButton: React.FC<BasicButtonProps> = ({
       gainNode.gain.setValueAtTime(0.15, audioContext.currentTime);
       gainNode.gain.exponentialRampToValueAtTime(
         0.001,
-        audioContext.currentTime + 0.08
+        audioContext.currentTime + 0.08,
       );
 
       oscillator.start();
@@ -110,9 +119,28 @@ const BasicButton: React.FC<BasicButtonProps> = ({
           "hover:bg-primary-200/15 hover:border-primary-200/40 hover:text-primary-200",
           "active:bg-primary-200/25",
           disabled &&
-            "opacity-50 cursor-not-allowed hover:bg-bg-300/30 hover:border-bg-300/50 hover:text-text-100"
+            "opacity-50 cursor-not-allowed hover:bg-bg-300/30 hover:border-bg-300/50 hover:text-text-100",
         );
 
+      case "memory":
+        return cn(
+          baseStyles,
+          "bg-blue-500/10 text-blue-300 border border-blue-500/20",
+          "hover:bg-blue-500/20 hover:border-blue-500/30 hover:text-blue-200",
+          "active:bg-blue-500/30 active:scale-95",
+          disabled &&
+            "opacity-40 cursor-not-allowed hover:bg-blue-500/10 hover:border-blue-500/20",
+        );
+
+      case "scientific":
+        return cn(
+          baseStyles,
+          "bg-purple-500/10 text-purple-300 border border-purple-500/20",
+          "hover:bg-purple-500/20 hover:border-purple-500/30 hover:text-purple-200",
+          "active:bg-purple-500/30 active:scale-95",
+          disabled &&
+            "opacity-40 cursor-not-allowed hover:bg-purple-500/10 hover:border-purple-500/20",
+        );
       case "operation":
         return cn(
           baseStyles,
@@ -120,7 +148,7 @@ const BasicButton: React.FC<BasicButtonProps> = ({
           "hover:bg-primary-200/25 hover:border-primary-200/50",
           "active:bg-primary-200/35",
           disabled &&
-            "opacity-50 cursor-not-allowed hover:bg-primary-200/15 hover:border-primary-200/30"
+            "opacity-50 cursor-not-allowed hover:bg-primary-200/15 hover:border-primary-200/30",
         );
 
       case "function":
@@ -130,7 +158,7 @@ const BasicButton: React.FC<BasicButtonProps> = ({
           "hover:bg-accent-100/20 hover:border-accent-100/30 hover:text-accent-200",
           "active:bg-accent-100/30",
           disabled &&
-            "opacity-50 cursor-not-allowed hover:bg-accent-100/10 hover:border-accent-100/20"
+            "opacity-50 cursor-not-allowed hover:bg-accent-100/10 hover:border-accent-100/20",
         );
 
       case "clear":
@@ -140,7 +168,7 @@ const BasicButton: React.FC<BasicButtonProps> = ({
           "hover:bg-red-500/20 hover:border-red-500/30 hover:text-red-300",
           "active:bg-red-500/30",
           disabled &&
-            "opacity-50 cursor-not-allowed hover:bg-red-500/10 hover:border-red-500/20"
+            "opacity-50 cursor-not-allowed hover:bg-red-500/10 hover:border-red-500/20",
         );
 
       case "equals":
@@ -150,7 +178,7 @@ const BasicButton: React.FC<BasicButtonProps> = ({
           "hover:from-primary-200 hover:to-primary-300 hover:shadow-lg hover:shadow-primary-200/25",
           "active:from-primary-300 active:to-primary-400",
           disabled &&
-            "opacity-50 cursor-not-allowed bg-gradient-to-br from-bg-300 to-bg-300 hover:from-bg-300 hover:to-bg-300 hover:shadow-none"
+            "opacity-50 cursor-not-allowed bg-gradient-to-br from-bg-300 to-bg-300 hover:from-bg-300 hover:to-bg-300 hover:shadow-none",
         );
 
       default:
@@ -166,7 +194,7 @@ const BasicButton: React.FC<BasicButtonProps> = ({
           "h-16 md:h-20", // Misma altura que los otros botones
           "text-lg md:text-xl", // Mismo tamaño de texto
           "col-span-2", // Ocupa 2 columnas
-          "w-full" // Asegura que ocupe todo el ancho disponible
+          "w-full", // Asegura que ocupe todo el ancho disponible
         );
       case "normal":
       default:
@@ -190,7 +218,7 @@ const BasicButton: React.FC<BasicButtonProps> = ({
         isPressed && "scale-95 shadow-inner",
         "focus:outline-none focus:ring-2 focus:ring-primary-200/50 focus:ring-offset-2 focus:ring-offset-bg-200",
         size === "wide" && "px-0", // Asegurar padding correcto
-        className
+        className,
       )}
       aria-label={typeof label === "string" ? label : undefined}
     >
@@ -217,7 +245,7 @@ const BasicButton: React.FC<BasicButtonProps> = ({
       <div
         className={cn(
           "absolute inset-0 rounded-xl border pointer-events-none",
-          variant === "equals" ? "border-white/20" : "border-black/10"
+          variant === "equals" ? "border-white/20" : "border-black/10",
         )}
       />
 
@@ -228,7 +256,7 @@ const BasicButton: React.FC<BasicButtonProps> = ({
           variant === "equals" && "drop-shadow-sm",
           typeof label === "string" &&
             label.length > 3 &&
-            "text-sm md:text-base"
+            "text-sm md:text-base",
         )}
       >
         {label}

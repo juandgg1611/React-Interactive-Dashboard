@@ -74,7 +74,7 @@ const Calculator = () => {
   const [totalCalculations, setTotalCalculations] = useState(0);
   const [sessionStart] = useState(new Date());
   const [lastCalculationTime, setLastCalculationTime] = useState<Date | null>(
-    null
+    null,
   );
 
   // Configuración
@@ -93,10 +93,10 @@ const Calculator = () => {
     // Simular métricas del sistema
     const metricsInterval = setInterval(() => {
       setBatteryLevel((prev) =>
-        Math.max(20, Math.min(100, prev + (Math.random() - 0.5) * 2))
+        Math.max(20, Math.min(100, prev + (Math.random() - 0.5) * 2)),
       );
       setCpuUsage((prev) =>
-        Math.max(5, Math.min(80, prev + (Math.random() - 0.5) * 5))
+        Math.max(5, Math.min(80, prev + (Math.random() - 0.5) * 5)),
       );
     }, 3000);
 
@@ -132,7 +132,9 @@ const Calculator = () => {
       if (displayValue === "0" || currentOperation) {
         setDisplayValue(num);
         setDisplayHistory(
-          currentOperation ? `${previousValue} ${currentOperation} ${num}` : num
+          currentOperation
+            ? `${previousValue} ${currentOperation} ${num}`
+            : num,
         );
       } else {
         setDisplayValue((prev) => prev + num);
@@ -141,7 +143,7 @@ const Calculator = () => {
 
       setCurrentOperation(null);
     },
-    [isError, displayValue, currentOperation, previousValue]
+    [isError, displayValue, currentOperation, previousValue],
   );
 
   const handleOperation = useCallback(
@@ -152,7 +154,7 @@ const Calculator = () => {
       setCurrentOperation(operation);
       setDisplayHistory(`${displayValue} ${operation}`);
     },
-    [isError, displayValue]
+    [isError, displayValue],
   );
 
   const handleEquals = useCallback(() => {
@@ -254,7 +256,7 @@ const Calculator = () => {
           break;
       }
     },
-    [displayValue, memory.value]
+    [displayValue, memory.value],
   );
 
   const handleDecimal = useCallback(() => {
@@ -317,7 +319,7 @@ const Calculator = () => {
         setIsError(true);
       }
     },
-    [isError, displayValue]
+    [isError, displayValue],
   );
 
   // ========== FUNCIONES ADICIONALES ==========
@@ -331,6 +333,45 @@ const Calculator = () => {
     setCalculationHistory([]);
     setTotalCalculations(0);
   }, []);
+
+  const handleButtonClick = useCallback(
+    (value: string) => {
+      console.log("Button clicked:", value);
+
+      // Determinar qué tipo de botón es
+      if (/[0-9]/.test(value)) {
+        handleNumber(value);
+      } else if (["+", "-", "*", "/"].includes(value)) {
+        handleOperation(value);
+      } else if (value === "=") {
+        handleEquals();
+      } else if (value === "C" || value === "CE") {
+        handleClear();
+      } else if (value === "⌫") {
+        handleBackspace();
+      } else if (["M+", "M-", "MR", "MC"].includes(value)) {
+        handleMemory(value);
+      } else if (value === ".") {
+        handleDecimal();
+      } else if (value === "%") {
+        handlePercentage();
+      } else {
+        // Para funciones científicas
+        handleScientificFunction(value);
+      }
+    },
+    [
+      handleNumber,
+      handleOperation,
+      handleEquals,
+      handleClear,
+      handleBackspace,
+      handleMemory,
+      handleDecimal,
+      handlePercentage,
+      handleScientificFunction,
+    ],
+  );
 
   const handleExportHistory = useCallback(() => {
     const historyText = calculationHistory
@@ -460,7 +501,7 @@ const Calculator = () => {
                       "border-primary-200/30 transition-all duration-300",
                       isScientificMode
                         ? "bg-primary-200/10 text-primary-200"
-                        : "text-primary-200 hover:bg-primary-200/10"
+                        : "text-primary-200 hover:bg-primary-200/10",
                     )}
                   >
                     <Brain className="h-4 w-4 mr-2" />
@@ -599,7 +640,7 @@ const Calculator = () => {
                             "border",
                             isError
                               ? "bg-red-500/20 text-red-400 border-red-500/30"
-                              : "bg-green-500/20 text-green-400 border-green-500/30"
+                              : "bg-green-500/20 text-green-400 border-green-500/30",
                           )}
                         >
                           {isError ? "Error" : "Operativo"}
@@ -613,14 +654,33 @@ const Calculator = () => {
                   </CardHeader>
 
                   <CardContent className="p-6">
-                    {/* Display */}
-                    <CalculatorDisplay
-                      value={displayValue}
-                      history={displayHistory}
-                      isError={isError}
-                    />
+                    {/* Display PRINCIPAL - Este es el único display que debe mostrarse */}
+                    <div className="mb-6">
+                      <div className="relative p-6 rounded-2xl border-2 backdrop-blur-md overflow-hidden group border-primary-200/40 bg-gradient-to-br from-primary-100/5 via-primary-200/3 to-primary-300/2 shadow-lg shadow-primary-100/10">
+                        <div className="absolute inset-0 bg-gradient-to-r from-primary-100/10 via-primary-200/5 to-primary-300/3 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                        <div className="absolute inset-0 rounded-2xl border border-white/5 pointer-events-none"></div>
+                        <div className="relative">
+                          {/* Línea de historial/expresión */}
+                          <div className="text-right text-text-200/70 text-sm sm:text-base mb-2 h-6 overflow-hidden font-mono">
+                            {displayHistory || " "}
+                          </div>
+                          {/* Línea principal del resultado */}
+                          <div className="text-4xl sm:text-5xl lg:text-6xl font-bold text-right font-mono transition-all duration-300 text-text-100">
+                            {displayValue}
+                          </div>
+                          <div className="absolute bottom-0 left-0 flex items-center gap-2 mt-2">
+                            {/* Indicador de error si existe */}
+                            {isError && (
+                              <span className="text-xs text-red-400 bg-red-500/10 px-2 py-1 rounded">
+                                Error
+                              </span>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
 
-                    {/* Botones */}
+                    {/* Botones - CON hideInternalDisplay=true para ocultar displays internos */}
                     <CalculatorButtons
                       onNumberClick={handleNumber}
                       onOperationClick={handleOperation}
@@ -634,12 +694,23 @@ const Calculator = () => {
                       onToggleSignClick={handleToggleSign}
                       onPercentageClick={handlePercentage}
                       onScientificFunctionClick={handleScientificFunction}
+                      // Estados
                       currentOperation={currentOperation}
                       memoryValue={memory.value}
                       isErrorState={isError}
                       currentResult={displayValue}
+                      // Nuevos props necesarios
+                      displayValue={displayValue}
+                      history={displayHistory}
+                      onButtonClick={handleButtonClick}
+                      onBackspace={handleBackspace}
+                      // Configuraciones
                       initialLayout={isScientificMode ? "scientific" : "basic"}
+                      initialButtonSize="normal"
                       initialShowLabels={isScientificMode}
+                      initialAnimateButtons={true}
+                      // ESTA ES LA CLAVE: Ocultar displays internos
+                      hideInternalDisplay={true}
                     />
                   </CardContent>
                 </Card>
@@ -736,7 +807,7 @@ const Calculator = () => {
                             "border",
                             isScientificMode
                               ? "bg-purple-500/20 text-purple-400 border-purple-500/30"
-                              : "bg-primary-200/20 text-primary-200 border-primary-200/30"
+                              : "bg-primary-200/20 text-primary-200 border-primary-200/30",
                           )}
                         >
                           {isScientificMode ? "Científico" : "Básico"}
@@ -822,7 +893,7 @@ const Calculator = () => {
                           "p-4 rounded-xl border transition-all duration-200 hover:scale-[1.01]",
                           index === 0
                             ? "bg-gradient-to-r from-primary-100/10 to-primary-200/5 border-primary-200/30"
-                            : "bg-bg-300/10 border-bg-300/40"
+                            : "bg-bg-300/10 border-bg-300/40",
                         )}
                       >
                         <div className="flex items-start justify-between">
@@ -833,7 +904,7 @@ const Calculator = () => {
                                   "text-xs",
                                   item.type === "scientific"
                                     ? "bg-purple-500/20 text-purple-400 border-purple-500/30"
-                                    : "bg-primary-200/20 text-primary-200 border-primary-200/30"
+                                    : "bg-primary-200/20 text-primary-200 border-primary-200/30",
                                 )}
                               >
                                 {item.type === "scientific"
@@ -962,7 +1033,7 @@ const Calculator = () => {
                             <div
                               className={cn(
                                 "w-2 h-2 rounded-full",
-                                value >= 0 ? "bg-green-500" : "bg-red-500"
+                                value >= 0 ? "bg-green-500" : "bg-red-500",
                               )}
                             />
                             <div>
@@ -979,7 +1050,7 @@ const Calculator = () => {
                           <div
                             className={cn(
                               "text-lg font-bold",
-                              value >= 0 ? "text-green-400" : "text-red-400"
+                              value >= 0 ? "text-green-400" : "text-red-400",
                             )}
                           >
                             {value >= 0 ? "+" : ""}
