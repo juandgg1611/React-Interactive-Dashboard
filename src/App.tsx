@@ -5,6 +5,7 @@ import LoginPage from "./components/auth/LoginPage";
 import RegisterPage from "./components/auth/RegisterPage";
 import { PasswordRecoveryFlow } from "./components/auth/recovery/PasswordRecoveryFlow";
 import Dashboard from "./components/pages/Dashboard";
+import Features from "./components/pages/Features";
 import "./App.css";
 
 import Budgets from "./components/pages/Budgets";
@@ -26,6 +27,7 @@ function App() {
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/recover-password" element={<PasswordRecoveryFlow />} />
         <Route path="/dashboard" element={<Dashboard />} />{" "}
+        <Route path="/features" element={<Features />} />
         <Route path="/profile" element={<Profile />} />
         <Route path="/transactions" element={<Transactions />} />
         <Route path="/budgets" element={<Budgets />} />
